@@ -5,4 +5,5 @@ namespace MyCarForSale.Core.Repositories;
 public interface ICarFeaturesRepository : IGenericRepository<CarFeaturesEntity>
 {
     Task<List<CarFeaturesEntity>> GetCarWithClass();
+    Task<List<CarFeaturesEntity>> GetCarWithImages(); 
 }

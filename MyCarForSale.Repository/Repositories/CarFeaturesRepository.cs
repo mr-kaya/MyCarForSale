@@ -12,7 +12,11 @@ public class CarFeaturesRepository : GenericRepository<CarFeaturesEntity>, ICarF
 
     public async Task<List<CarFeaturesEntity>> GetCarWithClass()
     {
-        //return await _dbContext.FeaturesBaseEntities.Include(x => x.MainClassificationEntityId).ToListAsync();
         return await _dbContext.FeaturesBaseEntities.Include(x => x.MainClassificationEntity).ToListAsync();
+    }
+
+    public async Task<List<CarFeaturesEntity>> GetCarWithImages()
+    {
+        return await _dbContext.FeaturesBaseEntities.Include(x => x.CarImagesEntities).ToListAsync();
     }
 }

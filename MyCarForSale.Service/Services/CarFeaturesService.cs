@@ -23,4 +23,10 @@ public class CarFeaturesService : GenericService<CarFeaturesEntity>, ICarFeature
          var cars = await _carFeaturesRepository.GetCarWithClass();
          return _mapper.Map<List<CarFeaturesWithMainClassDto>>(cars);
     }
+
+    public async Task<List<CarFeaturesWithImagesDto>> GetCarWithImages()
+    {
+        var carImages = await _carFeaturesRepository.GetCarWithImages();
+        return _mapper.Map<List<CarFeaturesWithImagesDto>>(carImages);
+    }
 }

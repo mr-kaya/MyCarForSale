@@ -18,7 +18,14 @@ public class CarFeaturesController : CustomBaseController
         _service = service;
         _carFeaturesService = carFeaturesService;
     }
-
+    
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetCarWithImages()
+    {
+        var cars = await _carFeaturesService.GetCarWithImages();
+        return CreateActionResult(CustomResponseDto<List<CarFeaturesWithImagesDto>>.Success(200, cars));
+    }
+    
     [HttpGet("[action]")]
     public async Task<IActionResult> GetCarWithClass()
     {
@@ -31,7 +38,6 @@ public class CarFeaturesController : CustomBaseController
     {
         var allCars = await _service.GetAllAsyncTask();
         var allCarDtos = _mapper.Map<List<CarFeaturesEntityDto>>(allCars.ToList());
-        //return Ok(CustomResponseDto<List<CarFeaturesEntityDto>>.Success(200, allCarDtos));
         return CreateActionResult(CustomResponseDto<List<CarFeaturesEntityDto>>.Success(200, allCarDtos));
     }
 

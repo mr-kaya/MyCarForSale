@@ -6,4 +6,5 @@ namespace MyCarForSale.Core.Services;
 public interface ICarFeaturesService : IGenericService<CarFeaturesEntity>
 {
     Task<List<CarFeaturesWithMainClassDto>> GetCarWithClass();
+    Task<List<CarFeaturesWithImagesDto>> GetCarWithImages();
 }
