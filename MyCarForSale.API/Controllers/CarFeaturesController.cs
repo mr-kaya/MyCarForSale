@@ -33,6 +33,8 @@ public class CarFeaturesController : CustomBaseController
         return CreateActionResult(CustomResponseDto<CarFeaturesWithClassAndImagesDto>.Success(200, sale));
     }
     
+    
+    
     [HttpGet("[action]")]
     public async Task<IActionResult> GetCarWithImages()
     {
@@ -72,6 +74,14 @@ public class CarFeaturesController : CustomBaseController
         return CreateActionResult(CustomResponseDto<CarFeaturesEntityDto>.Success(201, carDto));
     }
 
+    [HttpPut("[action]")]
+    public async Task<IActionResult> UpdateSaleCar(CarFeaturesWithClassAndImagesDto carFeaturesWithClassAndImagesDto)
+    {
+        await _carFeaturesService.UpdateSaleCarInformation(carFeaturesWithClassAndImagesDto);
+        
+        return CreateActionResult(CustomNoContentResponseDto.Success(204));
+    }
+    
     [HttpPut]
     public async Task<IActionResult> Update(CarFeaturesEntityDto carFeaturesEntityDto)
     {
@@ -80,6 +90,14 @@ public class CarFeaturesController : CustomBaseController
         return CreateActionResult(CustomNoContentResponseDto.Success(204));
     }
 
+    [HttpDelete("[action]/{id}")]
+    public async Task<IActionResult> DeleteSaleCar(int id)
+    {
+        var car = await _carFeaturesService.GetCarWithId(id);
+        //await _carFeaturesService.DeleteAsyncTask(car);
+        return CreateActionResult(CustomNoContentResponseDto.Success(204));
+    }
+    
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {

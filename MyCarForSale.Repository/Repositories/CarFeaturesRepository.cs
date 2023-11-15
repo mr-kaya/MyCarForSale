@@ -6,6 +6,7 @@ namespace MyCarForSale.Repository.Repositories;
 
 public class CarFeaturesRepository : GenericRepository<CarFeaturesEntity>, ICarFeaturesRepository
 {
+    
     public CarFeaturesRepository(AppDbContext dbContext) : base(dbContext)
     {
     }
@@ -32,4 +33,16 @@ public class CarFeaturesRepository : GenericRepository<CarFeaturesEntity>, ICarF
             .Include(y => y.CarImagesEntities).Include(z => z.UserAccountEntity)
             .FirstOrDefaultAsync(x => x.MainClassificationEntityId == id);
     }
-}
+
+    public void UpdateSaleCarInformation(CarFeaturesEntity entity)
+    {
+        _dbSet.Include(x => x.MainClassificationEntity).Include(y => y.CarImagesEntities)
+            .Include(z => z.UserAccountEntity);
+        _dbSet.Update(entity);
+    }
+
+    public void DeleteSaleCarInformation(CarFeaturesEntity entity)
+    {
+        throw new NotImplementedException();
+    }
+}   

@@ -7,7 +7,7 @@ namespace MyCarForSale.Repository.Repositories;
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
     protected readonly AppDbContext _dbContext;
-    private readonly DbSet<T> _dbSet;
+    protected readonly DbSet<T> _dbSet;
 
     public GenericRepository(AppDbContext dbContext)
     {

@@ -6,7 +6,5 @@ public class CarFeaturesWithClassAndImagesDto : CarFeaturesEntityDto
     
     public ICollection<CarImagesEntityDto> CarImagesEntities { get; set; }
 
-    public string UserAccountEntityName { get; set; }
-    public string UserAccountEntitySurname { get; set; }
-    public string UserAccountEntityPhoneNumber { get; set; }
+    public UserAccountEntityDto UserAccountEntity{ get; set; }
 }

@@ -41,4 +41,16 @@ public class CarFeaturesService : GenericService<CarFeaturesEntity>, ICarFeature
         var selectedCar = await _carFeaturesRepository.GetCarWithId(id);
         return _mapper.Map<CarFeaturesWithClassAndImagesDto>(selectedCar);
     }
+
+    public async Task UpdateSaleCarInformation(CarFeaturesWithClassAndImagesDto entity)
+    {
+        var carFeaturesEntity = _mapper.Map<CarFeaturesEntity>(entity);
+        _carFeaturesRepository.UpdateSaleCarInformation(carFeaturesEntity);
+        await _unitOfWork.CommitAsyncTask();
+    }
+
+    public async Task DeleteSaleCarInformation(CarFeaturesWithClassAndImagesDto entity)
+    {
+        throw new NotImplementedException();
+    }
 }
