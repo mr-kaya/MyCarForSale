@@ -18,6 +18,20 @@ public class CarFeaturesController : CustomBaseController
         _service = service;
         _carFeaturesService = carFeaturesService;
     }
+
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetAllSales()
+    {
+        var car = await _carFeaturesService.GetCarAllClass();
+        return CreateActionResult(CustomResponseDto<List<CarFeaturesWithClassAndImagesDto>>.Success(200, car));
+    }
+
+    [HttpGet("[action]/{id}")]
+    public async Task<IActionResult> GetSaleById(int id)
+    {
+        var sale = await _carFeaturesService.GetCarWithId(id);
+        return CreateActionResult(CustomResponseDto<CarFeaturesWithClassAndImagesDto>.Success(200, sale));
+    }
     
     [HttpGet("[action]")]
     public async Task<IActionResult> GetCarWithImages()

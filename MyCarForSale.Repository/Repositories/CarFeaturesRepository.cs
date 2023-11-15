@@ -19,4 +19,17 @@ public class CarFeaturesRepository : GenericRepository<CarFeaturesEntity>, ICarF
     {
         return await _dbContext.FeaturesBaseEntities.Include(x => x.CarImagesEntities).ToListAsync();
     }
+
+    public async Task<List<CarFeaturesEntity>> GetCarAllClass()
+    {
+        return await _dbContext.FeaturesBaseEntities.Include(x => x.MainClassificationEntity)
+            .Include(y => y.CarImagesEntities).Include(z=>z.UserAccountEntity).ToListAsync();
+    }
+
+    public async Task<CarFeaturesEntity> GetCarWithId(int id)
+    {
+        return await _dbContext.FeaturesBaseEntities.Include(x => x.MainClassificationEntity)
+            .Include(y => y.CarImagesEntities).Include(z => z.UserAccountEntity)
+            .FirstOrDefaultAsync(x => x.MainClassificationEntityId == id);
+    }
 }

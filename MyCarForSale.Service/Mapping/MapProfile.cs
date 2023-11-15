@@ -16,6 +16,7 @@ public class MapProfile : Profile
         CreateMap<UserFavoritesEntity, UserFavoritesEntityDto>().ReverseMap();
         CreateMap<CarFeaturesEntity, CarFeaturesWithMainClassDto>();
         CreateMap<CarFeaturesEntity, CarFeaturesWithImagesDto>();
+        CreateMap<CarFeaturesEntity, CarFeaturesWithClassAndImagesDto>();
         //CreateMap<BaseEntity, BaseEntityWithCarImageEntityDto>();fsds
     }
 }
