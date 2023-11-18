@@ -30,27 +30,30 @@ public class CarFeaturesService : GenericService<CarFeaturesEntity>, ICarFeature
         return _mapper.Map<List<CarFeaturesWithImagesDto>>(carImages);
     }
 
-    public async Task<List<CarFeaturesWithClassAndImagesDto>> GetCarAllClass()
+    public async Task<IEnumerable<CarFeaturesWithImageAndClassificationAndUserAccountDto>> GetAllCars()
     {
-        var cars = await _carFeaturesRepository.GetCarAllClass();
-        return _mapper.Map<List<CarFeaturesWithClassAndImagesDto>>(cars);
+        var allCars = await _carFeaturesRepository.GetAllCars();
+        return _mapper.Map<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>(allCars);
     }
 
-    public async Task<CarFeaturesWithClassAndImagesDto> GetCarWithId(int id)
+    public async Task<CarFeaturesWithImageAndClassificationAndUserAccountDto> GetCarWithId(int id)
     {
         var selectedCar = await _carFeaturesRepository.GetCarWithId(id);
-        return _mapper.Map<CarFeaturesWithClassAndImagesDto>(selectedCar);
+        return _mapper.Map<CarFeaturesWithImageAndClassificationAndUserAccountDto>(selectedCar);
     }
 
-    public async Task UpdateSaleCarInformation(CarFeaturesWithClassAndImagesDto entity)
+    public async Task UpdateSaleCarInformation(CarFeaturesWithImageAndClassificationDto entity)
     {
-        var carFeaturesEntity = _mapper.Map<CarFeaturesEntity>(entity);
-        _carFeaturesRepository.UpdateSaleCarInformation(carFeaturesEntity);
+        var updateCar = _mapper.Map<CarFeaturesEntity>(entity);
+        _carFeaturesRepository.UpdateSaleCarInformation(updateCar);
+        
         await _unitOfWork.CommitAsyncTask();
     }
 
-    public async Task DeleteSaleCarInformation(CarFeaturesWithClassAndImagesDto entity)
+    public async Task DeleteSaleCarInformation(CarFeaturesWithImagesDto entity)
     {
-        throw new NotImplementedException();
+        var carFeaturesEntity = _mapper.Map<CarFeaturesEntity>(entity);
+        _carFeaturesRepository.DeleteSaleCarInformation(carFeaturesEntity);
+        await _unitOfWork.CommitAsyncTask();
     }
 }

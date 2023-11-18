@@ -14,7 +14,8 @@ public class CarFeaturesEntityConfiguration : IEntityTypeConfiguration<CarFeatur
         builder.Property(x => x.TransmissionType).IsRequired();
         builder.Property(x => x.EngineFuelType).IsRequired();
         builder.Property(x => x.EngineDisplacement).IsRequired();
-
+        
+        builder.Property(x => x.Price).HasMaxLength(12).IsRequired();
         builder.Property(x => x.AdvertisementName).IsRequired();
         builder.Property(x => x.AdvertisementDescription).IsRequired();
 

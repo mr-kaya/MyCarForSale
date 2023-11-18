@@ -7,8 +7,9 @@ public interface ICarFeaturesService : IGenericService<CarFeaturesEntity>
 {
     Task<List<CarFeaturesWithMainClassDto>> GetCarWithClass();
     Task<List<CarFeaturesWithImagesDto>> GetCarWithImages();
-    Task<List<CarFeaturesWithClassAndImagesDto>> GetCarAllClass();
-    Task<CarFeaturesWithClassAndImagesDto> GetCarWithId(int id);
-    Task UpdateSaleCarInformation(CarFeaturesWithClassAndImagesDto entity);
-    Task DeleteSaleCarInformation(CarFeaturesWithClassAndImagesDto entity);
+
+    Task<IEnumerable<CarFeaturesWithImageAndClassificationAndUserAccountDto>> GetAllCars();
+    Task<CarFeaturesWithImageAndClassificationAndUserAccountDto> GetCarWithId(int id);
+    Task UpdateSaleCarInformation(CarFeaturesWithImageAndClassificationDto entity);
+    Task DeleteSaleCarInformation(CarFeaturesWithImagesDto entity);
 }

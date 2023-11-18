@@ -12,6 +12,9 @@ public class CarFeaturesEntityDtoValidator : AbstractValidator<CarFeaturesEntity
             .NotEmpty().WithMessage("{PropertyName} alanının doldurulması zorunludur.").MaximumLength(50).WithMessage("En fazla 50 karakter kullanabilirsiniz.");
         RuleFor(x => x.AdvertisementDescription).NotNull().WithMessage("{PropertyName} alanını boş bırakılamaz.")
             .NotEmpty().WithMessage("{PropertyName} alanı boş bırakılamaz.").MaximumLength(500).WithMessage("En fazla 500 karakter kullanabilirsiniz.");
+        RuleFor(x => x.Price).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
+            .WithMessage("{PropertyName} alanı boş bırakılamaz.").GreaterThan(0)
+            .WithMessage("Girdiğiniz değer '0'dan büyük olmalıdır.");
         
         List<string> drivetrainList = new List<string>() {"Front","Back","FourMotion"};
         RuleFor(x => x.CarDrivetrain).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()

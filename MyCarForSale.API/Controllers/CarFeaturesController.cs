@@ -19,21 +19,12 @@ public class CarFeaturesController : CustomBaseController
         _carFeaturesService = carFeaturesService;
     }
 
-    [HttpGet("[action]")]
-    public async Task<IActionResult> GetAllSales()
-    {
-        var car = await _carFeaturesService.GetCarAllClass();
-        return CreateActionResult(CustomResponseDto<List<CarFeaturesWithClassAndImagesDto>>.Success(200, car));
-    }
-
     [HttpGet("[action]/{id}")]
     public async Task<IActionResult> GetSaleById(int id)
     {
         var sale = await _carFeaturesService.GetCarWithId(id);
-        return CreateActionResult(CustomResponseDto<CarFeaturesWithClassAndImagesDto>.Success(200, sale));
+        return CreateActionResult(CustomResponseDto<CarFeaturesWithImageAndClassificationAndUserAccountDto>.Success(200, sale));
     }
-    
-    
     
     [HttpGet("[action]")]
     public async Task<IActionResult> GetCarWithImages()
@@ -47,6 +38,14 @@ public class CarFeaturesController : CustomBaseController
     {
         var cars = await _carFeaturesService.GetCarWithClass();
         return CreateActionResult(CustomResponseDto<List<CarFeaturesWithMainClassDto>>.Success(200, cars));
+    }
+
+    [HttpGet("[action]")]
+    public async Task<IActionResult> AllSaleCars()
+    {
+        var allSaleCars = await _carFeaturesService.GetAllCars();
+        
+        return CreateActionResult(CustomResponseDto<IEnumerable<CarFeaturesWithImageAndClassificationAndUserAccountDto>>.Success(200, allSaleCars));
     }
     
     [HttpGet]
@@ -75,9 +74,9 @@ public class CarFeaturesController : CustomBaseController
     }
 
     [HttpPut("[action]")]
-    public async Task<IActionResult> UpdateSaleCar(CarFeaturesWithClassAndImagesDto carFeaturesWithClassAndImagesDto)
+    public async Task<IActionResult> UpdateSaleCar(CarFeaturesWithImageAndClassificationDto carFeaturesWithImagesDto)
     {
-        await _carFeaturesService.UpdateSaleCarInformation(carFeaturesWithClassAndImagesDto);
+        await _carFeaturesService.UpdateSaleCarInformation(carFeaturesWithImagesDto);
         
         return CreateActionResult(CustomNoContentResponseDto.Success(204));
     }
@@ -94,7 +93,8 @@ public class CarFeaturesController : CustomBaseController
     public async Task<IActionResult> DeleteSaleCar(int id)
     {
         var car = await _carFeaturesService.GetCarWithId(id);
-        //await _carFeaturesService.DeleteAsyncTask(car);
+        var carImageDto = _mapper.Map<CarFeaturesWithImagesDto>(car);
+        await _carFeaturesService.DeleteSaleCarInformation(carImageDto);
         return CreateActionResult(CustomNoContentResponseDto.Success(204));
     }
     
