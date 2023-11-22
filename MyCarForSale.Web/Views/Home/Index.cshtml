@@ -1,0 +1,70 @@
+﻿@using System.Globalization
+@model System.Collections.Generic.List<MyCarForSale.Core.DTOs.CarFeaturesWithImageAndClassificationAndUserAccountDto>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="flex flex-row justify-center">
+    <div class="flex-col bg-green-600">
+        
+    </div>
+    <div class="flex-col text-center mx-5">
+        <table class="table table-fixed bg-amber-600">
+            <thead>
+            <th>Car Image</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Drivetrain</th>
+            <th>Horse Power</th>
+            <th>Torque</th>
+            <th>Displacement</th>
+            <th>Transmission</th>
+            <th>Car Brand</th>
+            <th>Car Model</th>
+            <th>Car Package</th>
+            <th>Car Year</th>
+            </thead>
+            <tbody>
+            
+            @foreach (var item in Model)
+            {
+                <tr onclick="rowClick('@item.Id')" class="max-h-4 w-auto">
+                    <td>
+                        @if (item.CarImagesEntities.Count != 0)
+                        {
+                            @foreach (var image in item.CarImagesEntities)
+                            {
+                                <img src="@image.CarImageUrl" alt="car image"/>
+                                break;
+                            }   
+                        }
+                        else
+                        {
+                            <img src="https://img.freepik.com/free-photo/empty-parking-lot-parking-lane-outdoor-public-park_1127-3374.jpg" alt="car image"/>
+                        }
+                    </td>
+                    <td>@item.AdvertisementName</td>
+                    <td>@item.AdvertisementDescription</td>
+                    <td>@item.Price.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".")</td>
+                    <td>@item.CarDrivetrain</td>
+                    <td>@item.EngineHorsePower</td>
+                    <td>@item.EngineTorque</td>
+                    <td>@item.EngineDisplacement</td>
+                    <td>@item.TransmissionType</td>
+                    <td>@item.MainClassificationEntityCarBrand</td>
+                    <td>@item.MainClassificationEntityCarModel</td>
+                    <td>@item.MainClassificationEntityCarPackage</td>
+                    <td>@item.MainClassificationEntityCarYear</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function rowClick(id) {
+    console.log("Tıklanan satır ID : ", id);
+}
+</script>
