@@ -1,9 +1,16 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using MyCarForSale.Core.DTOs;
 using MyCarForSale.Web.Models;
 using MyCarForSale.Web.Services;
 
 namespace MyCarForSale.Web.Controllers;
+
+public class MyViewModel
+{
+    public IEnumerable<CarFeaturesWithImageAndClassificationAndUserAccountDto> CarFeatures { get; set; }
+    public List<string>? MainClassification { get; set; }
+}
 
 public class HomeController : Controller
 {
@@ -24,13 +31,31 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         var cars = await _carFeaturesService.AllSaleCarsAsync();
+        var classification = await _carFeaturesService.AllClassificationAsync();
         Random random = new Random();
         for (int i = 0; i < cars.Count; i++)
         {
             int randomIndex = random.Next(cars.Count());
             (cars[i], cars[randomIndex]) = (cars[randomIndex], cars[i]);
         }
-        return View(cars);
+
+        List<string> classificationList = new List<string>();
+        foreach (var item in classification)
+        {
+            int index = classificationList.FindIndex(a => a.Contains(item.MainClassification));
+            if (index == -1) 
+            {
+                classificationList.Add(item.MainClassification);
+            }
+        }
+
+        var myViewModel = new MyViewModel
+        {
+            CarFeatures = cars,
+            MainClassification = classificationList
+        };
+        //return View(new {CarFeatures = cars, MainClassification = classification});
+        return View(myViewModel);
     }
 
     public async Task<IActionResult> Remove(int id)

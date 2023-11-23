@@ -21,6 +21,12 @@ public class CarFeaturesWithImageAndClassificationAndUserAccountService
         return response.Data;
     }
 
+    public async Task<List<MainClassificationEntityDto>> AllClassificationAsync()
+    {
+        var response = await _httpClient.GetFromJsonAsync<CustomResponseDto<List<MainClassificationEntityDto>>>("MainClassification");
+        return response.Data;
+    }
+    
     public async Task<CarFeaturesEntityDto> SaveAsync(CarFeaturesEntityDto newCarFeatures)
     {
         var response = await _httpClient.PostAsJsonAsync("CarFeatures", newCarFeatures);
