@@ -1,0 +1,114 @@
+﻿@model MyCarForSale.Core.DTOs.CarFeaturesWithImageAndClassificationAndUserAccountDto
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+
+    List<string> images = new List<string>();
+    foreach (var imageItem in Model.CarImagesEntities)
+    {
+        images.Add(imageItem.CarImageUrl);
+    }
+}
+
+<div class="container mx-auto flex flex-row justify-around">
+    <div class="hidden md:flex flex-col relative">
+        <div class="max-h-[80vh] min-h-[80vh] rounded-lg bg-blue-500 sticky top-5 flex flex-col flex-nowrap justify-between">
+            @*
+            Side Panel
+            *@
+            <div class="flex flex-col flex-nowrap justify-between rounded-lg bg-blue-600 text-center align-middle text-white text-lg font-semibold">
+                <br/>
+                <label class="px-24">@Model.MainClassificationEntityCarBrand</label>
+                <label class="px-24">@Model.MainClassificationEntityCarPackage</label>
+                <label class="px-24">@Model.MainClassificationEntityCarYear</label>
+                <br/>
+                <label class="px-24">@Model.MainClassificationEntityMainClassification</label>
+                <br/>
+            </div>
+        </div>
+        <div class="my-[10vh]"></div>
+        <div class="min-h-[5vh] sticky top-[85vh]">
+            <a href="#" class="flex justify-center">
+                <svg class="h-10 mr-3" width="51" height="70" viewBox="0 0 51 70" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)"><path d="M1 53H27.9022C40.6587 53 51 42.7025 51 30H24.0978C11.3412 30 1 40.2975 1 53Z" fill="#76A9FA"></path><path d="M-0.876544 32.1644L-0.876544 66.411C11.9849 66.411 22.4111 55.9847 22.4111 43.1233L22.4111 8.87674C10.1196 8.98051 0.518714 19.5571 -0.876544 32.1644Z" fill="#A4CAFE"></path><path d="M50 5H23.0978C10.3413 5 0 15.2975 0 28H26.9022C39.6588 28 50 17.7025 50 5Z" fill="#1C64F2"></path></g><defs><clipPath id="clip0"><rect width="51" height="70" fill="white"></rect></clipPath></defs></svg>
+                <span class="self-center text-lg font-semibold whitespace-nowrap">MyCarForSale</span>
+            </a>
+        </div>
+    </div>
+    <div class="mx-5">
+        <div onwheel="resimYerDegistir(event)" class="block max-h-96">
+            <div class="flex mx-auto justify-center relative  w-4/5 z-20">
+                <img id="resim1" class="rounded-lg shadow-2xl shadow-black" src="@images[1]" alt="Image could not be loaded."/>
+            </div>
+            <div id="resim2" class="flex mx-auto justify-center relative w-3/4 -top-96 z-10">
+                <img class="rounded-lg shadow-2xl shadow-black brightness-75" src="@images[0]" alt="Image could not be loaded."/>
+            </div>
+        </div>
+    </div>
+    <div class="hidden md:flex flex-col relative">
+            <div class="max-h-[80vh] min-h-[80vh] rounded-lg bg-blue-500 sticky top-5 flex flex-col flex-nowrap justify-between">
+                @*
+                Side Panel
+                *@
+                <div class="flex flex-col flex-nowrap justify-between rounded-lg bg-blue-600 text-center align-middle text-white text-lg font-semibold">
+                    <br/>
+                    <label class="px-24">@Model.MainClassificationEntityCarBrand</label>
+                    <label class="px-24">@Model.MainClassificationEntityCarPackage</label>
+                    <label class="px-24">@Model.MainClassificationEntityCarYear</label>
+                    <br/>
+                    <label class="px-24">@Model.MainClassificationEntityMainClassification</label>
+                    <br/>
+                </div>
+            </div>
+            <div class="my-[10vh]"></div>
+            <div class="min-h-[5vh] sticky top-[85vh]">
+                <a href="#" class="flex justify-center">
+                    <svg class="h-10 mr-3" width="51" height="70" viewBox="0 0 51 70" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)"><path d="M1 53H27.9022C40.6587 53 51 42.7025 51 30H24.0978C11.3412 30 1 40.2975 1 53Z" fill="#76A9FA"></path><path d="M-0.876544 32.1644L-0.876544 66.411C11.9849 66.411 22.4111 55.9847 22.4111 43.1233L22.4111 8.87674C10.1196 8.98051 0.518714 19.5571 -0.876544 32.1644Z" fill="#A4CAFE"></path><path d="M50 5H23.0978C10.3413 5 0 15.2975 0 28H26.9022C39.6588 28 50 17.7025 50 5Z" fill="#1C64F2"></path></g><defs><clipPath id="clip0"><rect width="51" height="70" fill="white"></rect></clipPath></defs></svg>
+                    <span class="self-center text-lg font-semibold whitespace-nowrap">MyCarForSale</span>
+                </a>
+            </div>
+        </div>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <td>Id</td>
+        <td>Price</td>
+        <td>Advertisement Name</td>
+        <td>Advertisement Description</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>@Model.Id</td>
+        <td>@Model.Price</td>
+        <td>@Model.AdvertisementName</td>
+        <td>@Model.AdvertisementDescription</td>
+    </tr>
+    </tbody>
+</table>
+
+
+
+<script>
+    var resimIndex = 0;
+    function resimYerDegistir(event) {
+        var resim1 = document.getElementById("resim1");
+        var resim2 = document.getElementById("resim2");
+        
+        if (event.deltaY > 0) {
+            resimIndex++;
+        } else {
+            resimIndex--;
+        }
+        
+        if (resimIndex == 0) {
+            resim1.style.zIndex = 3;
+            resim2.style.zIndex = 2;
+        }else if(resimIndex == 1) {
+            resim1.style.zIndex = 2;
+            resim2.style.zIndex = 3;
+        }
+    }
+</script>

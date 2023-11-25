@@ -33,12 +33,13 @@ public class HomeController : Controller
         var cars = await _carFeaturesService.AllSaleCarsAsync();
         var classification = await _carFeaturesService.AllClassificationAsync();
         Random random = new Random();
+        
         for (int i = 0; i < cars.Count; i++)
         {
             int randomIndex = random.Next(cars.Count());
             (cars[i], cars[randomIndex]) = (cars[randomIndex], cars[i]);
         }
-
+    
         List<string> classificationList = new List<string>();
         foreach (var item in classification)
         {
@@ -58,6 +59,12 @@ public class HomeController : Controller
         return View(myViewModel);
     }
 
+    public async Task<IActionResult> CarId(int id)
+    {
+        var getIdSaleCar = await _carFeaturesService.GetSaleByIdAsync(id);
+        return View(getIdSaleCar);
+    }
+    
     public async Task<IActionResult> Remove(int id)
     {
         await _carFeaturesService.RemoveAsync(id);

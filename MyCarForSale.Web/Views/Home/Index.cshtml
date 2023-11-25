@@ -2,17 +2,38 @@
 @model MyCarForSale.Web.Controllers.MyViewModel
 @{
     ViewData["Title"] = "Home Page";
+
+    var carFeaturesAllIds = Model.CarFeatures.Select(p => p.Id).ToList();
+    var json = Json.Serialize(carFeaturesAllIds);
 }
 
 <div class="container mx-auto flex flex-row justify-around">
     <div class="hidden md:flex flex-col relative">
-        <div class="min-h-[80vh] text-center mx-5 px-36  rounded bg-blue-500 sticky top-5 flex flex-col flex-wrap justify-between">
+        <div class="max-h-[80vh] min-h-[80vh] rounded-lg bg-blue-500 sticky top-5 flex flex-col flex-nowrap justify-between">
             @*
             Side Panel
             *@
             @foreach (var item in Model.MainClassification)
             {
-                <button class="flex justify-center align-middle self-stretch my-auto">@item</button>
+                var paddingY = 18 / Model.MainClassification.Count;
+                if (Model.MainClassification.Count > 6)
+                {
+                    paddingY = (int)1.5;
+                    if (Model.MainClassification.Count > 17)
+                    {
+                        paddingY = 0;
+                    }
+                    else if (Model.MainClassification.Count > 10)
+                    {
+                        paddingY = (int)0.5;
+                    }
+                }
+                
+                <a asp-page='/@item'
+                        style="padding-top: @(paddingY)rem; padding-bottom: @(paddingY)rem;"
+                        class="flex justify-center align-middle m-0 px-36 text-center text-white font-semibold text-lg rounded-lg  hover:bg-blue-600 hover:cursor-pointer">
+                    @item
+                </a>
             }
         </div>
         <div class="my-[10vh]"></div>
@@ -24,27 +45,29 @@
         </div>
     </div>
     <div class="flex-col text-center mx-5">
-        <table class="">
-            <thead class="sticky top-0 backdrop-blur-sm mix-blend-multiply bg-blue-400">
-            <th class=" mx-auto py-4 px-24 whitespace-nowrap"></th>
-            <th class="mx-auto py-4 px-10 whitespace-nowrap">Ad Title</th>
-            @*<th class="mx-auto py-4 px-8 whitespace-nowrap">Description</th>*@
-            <th class="mx-auto py-4 px-8 whitespace-nowrap">Price</th>
-            @*<th class="mx-auto py-4 px-8 whitespace-nowrap">Drivetrain</th>*@
-            @*<th class="mx-auto py-4 px-8 whitespace-nowrap">Horse Power</th>*@
-            @*<th class="mx-auto py-4 px-8 whitespace-nowrap">Torque</th>*@
-            <th class="mx-auto py-4 px-8 whitespace-nowrap">Displacement</th>
-            <th class="mx-auto py-4 px-8 whitespace-nowrap">Transmission</th>
-            <th class="mx-auto py-4 px-8 whitespace-nowrap">Car Brand</th>
-            <th class="mx-auto py-4 px-8 whitespace-nowrap">Car Model</th>
-            <th class="mx-auto py-4 px-8 whitespace-nowrap">Car Package</th>
-            <th class="mx-auto py-4 px-8 whitespace-nowrap">Car Year</th>
+        <table id="myTable">
+            <thead>
+                <tr class="sticky top-0 backdrop-blur-sm mix-blend-multiply bg-blue-400">
+                    <th class=" mx-auto py-4 px-24 whitespace-nowrap"></th>
+                    <th class="mx-auto py-4 px-10 whitespace-nowrap">Ad Title</th>
+                    @*<th class="mx-auto py-4 px-8 whitespace-nowrap">Description</th>*@
+                    <th onclick="sortTable(3)" class="mx-auto py-4 px-8 whitespace-nowrap hover:cursor-pointer">Price</th>
+                    @*<th class="mx-auto py-4 px-8 whitespace-nowrap">Drivetrain</th>*@
+                    @*<th class="mx-auto py-4 px-8 whitespace-nowrap">Horse Power</th>*@
+                    @*<th class="mx-auto py-4 px-8 whitespace-nowrap">Torque</th>*@
+                    <th onclick="sortTable(4)" class="mx-auto py-4 px-8 whitespace-nowrap hover:cursor-pointer">Displacement</th>
+                    <th onclick="sortTable(5)" class="mx-auto py-4 px-8 whitespace-nowrap hover:cursor-pointer">Transmission</th>
+                    <th onclick="sortTable(6)" class="mx-auto py-4 px-8 whitespace-nowrap hover:cursor-pointer">Car Brand</th>
+                    <th onclick="sortTable(7)" class="mx-auto py-4 px-8 whitespace-nowrap hover:cursor-pointer">Car Model</th>
+                    <th onclick="sortTable(8)" class="mx-auto py-4 px-8 whitespace-nowrap hover:cursor-pointer">Car Package</th>
+                    <th onclick="sortTable(9)" class="mx-auto py-4 px-8 whitespace-nowrap hover:cursor-pointer">Car Year</th>
+                </tr>
             </thead>
             <tbody>
-            
             @foreach (var item in Model.CarFeatures)
             {
-                <tr onclick="rowClick('@item.Id')" class="max-h-4 w-auto even:bg-blue-100 odd:bg-white">
+                <tr id="row-@item.Id" onclick="rowClick('@item.Id')" class="max-h-4 w-auto even:bg-blue-100 odd:bg-white hover:bg-blue-50 hover:cursor-pointer">
+                    <td class="hidden"><a id="CarDetailsHref_@item.Id" class=" decoration-0" asp-area="" asp-controller="Home" asp-action="CarId" asp-route-id="@item.Id">Giriş</a></td>
                     <td class="">
                         @if (item.CarImagesEntities.Count != 0)
                         {
@@ -52,7 +75,7 @@
                             {
                                 <img src="@image.CarImageUrl" alt="car image"/>
                                 break;
-                            }   
+                            }
                         }
                         else
                         {
@@ -73,44 +96,73 @@
                     <td class="">@item.MainClassificationEntityCarYear</td>
                 </tr>
             }
-            @foreach (var item in Model.CarFeatures)
-                {
-                    <tr onclick="rowClick('@item.Id')" class="max-h-4 w-auto even:bg-blue-100 odd:bg-white">
-                        <td class="">
-                            @if (item.CarImagesEntities.Count != 0)
-                            {
-                                @foreach (var image in item.CarImagesEntities)
-                                {
-                                    <img src="@image.CarImageUrl" alt="car image"/>
-                                    break;
-                                }   
-                            }
-                            else
-                            {
-                                <img src="https://img.freepik.com/free-photo/empty-parking-lot-parking-lane-outdoor-public-park_1127-3374.jpg" alt="car image"/>
-                            }
-                        </td>
-                        <td class="">@item.AdvertisementName</td>
-                        @*<td class="">@item.AdvertisementDescription</td>*@
-                        <td class="">@item.Price.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".")</td>
-                        @*<td class="">@item.CarDrivetrain</td>*@
-                        @*<td class="">@item.EngineHorsePower</td>*@
-                        @*<td class="">@item.EngineTorque</td>*@
-                        <td class="">@item.EngineDisplacement</td>
-                        <td class="">@item.TransmissionType</td>
-                        <td class="">@item.MainClassificationEntityCarBrand</td>
-                        <td class="">@item.MainClassificationEntityCarModel</td>
-                        <td class="">@item.MainClassificationEntityCarPackage</td>
-                        <td class="">@item.MainClassificationEntityCarYear</td>
-                    </tr>
-                }
             </tbody>
         </table>
     </div>
 </div>
 
 <script>
+var array = @json;
+array.forEach(carFeaturesId);
+
+function carFeaturesId(item) {
+    const row = document.getElementById(`row-${item}`);
+    row.addEventListener("click", ()=> {
+       //window.location.href = `/Home/Sale/${item}`; 
+    });
+}
+
 function rowClick(id) {
-    console.log("Tıklanan satır ID : ", id);
+    document.querySelector("a#CarDetailsHref_"+id).click();
+}
+</script>
+
+
+<script>
+function sortTable(columnIndex) {
+    const table = document.getElementById('myTable');
+    const rows = Array.from(table.querySelectorAll('tbody tr'));
+    
+    // Sıralama işlevini tanımlayın
+    const sortFunction = (a, b) => {
+        let aValue = a.cells[columnIndex].textContent;
+        let bValue = b.cells[columnIndex].textContent;
+
+        //Fiyat kısmındaki "." ları çıkarıp ayrıca karşılaştırmasını yaptım.
+        if (columnIndex === 3) {
+            aValue = aValue.split('.').join("");
+            bValue = bValue.split('.').join("");
+            
+            if (Number(aValue) < Number(bValue)) {
+                return -1;
+            } else if (Number(aValue) > Number(bValue)) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        
+        // Sıralama yöntemine göre karşılaştırma yapın
+        if (aValue < bValue) {
+            return -1;
+        } else if (aValue > bValue) {
+            return 1;
+        } else {
+            return 0;
+        }
+    };
+
+    // Sıralama işlevini kullanarak satırları yeniden düzenleyin
+    rows.sort(sortFunction);
+
+    // Sıralama yönüne göre tersine çevirin (desc)
+    if (table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.contains('desc')) {
+        rows.reverse();
+        table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.remove('desc');
+    } else {
+        table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.add('desc');
+    }
+
+    table.querySelector('tbody').append(...rows); 
 }
 </script>

@@ -17,7 +17,7 @@ public class CarFeaturesWithImageAndClassificationAndUserAccountService
             await _httpClient
                 .GetFromJsonAsync<CustomResponseDto<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>>(
                     "CarFeatures/AllSaleCars");
-
+        
         return response.Data;
     }
 
@@ -44,7 +44,7 @@ public class CarFeaturesWithImageAndClassificationAndUserAccountService
                 .GetFromJsonAsync<CustomResponseDto<CarFeaturesWithImageAndClassificationAndUserAccountDto>>(
                     $"CarFeatures/GetSaleById/{id}");
 
-        if (response != null && !response.Erorrs.Any())
+        if (response == null && response.Erorrs.Any())
         {
             return null;
         }
