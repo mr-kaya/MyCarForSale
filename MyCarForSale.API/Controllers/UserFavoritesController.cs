@@ -33,6 +33,17 @@ public class UserFavoritesController : CustomBaseController
         var favoriteDto = _mapper.Map<UserFavoritesEntityDto>(favorite);
         return CreateActionResult(CustomResponseDto<UserFavoritesEntityDto>.Success(200, favoriteDto));
     }
+    
+    /*
+     * En son eklenen kısım. Burada kullanıcının bütün favorileri sıralanıyor.
+     */
+    [HttpGet("[action]/{id}")]
+    public async Task<IActionResult> GetIdWhereFavorites(int id)
+    {
+        var allFavorites = _service.Where(entity => entity.FavoriteUserId == id);
+        var allFavoritesDto = _mapper.Map<List<UserFavoritesEntityDto>>(allFavorites);
+        return CreateActionResult(CustomResponseDto<List<UserFavoritesEntityDto>>.Success(200, allFavoritesDto));
+    }
 
     [HttpPost]
     public async Task<IActionResult> Save(UserFavoritesEntityDto favoritesEntityDto)

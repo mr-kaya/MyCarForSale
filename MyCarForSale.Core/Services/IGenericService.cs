@@ -40,6 +40,7 @@ public interface IGenericService<T> where T : class
 
     //Direkt veriyi değil de, verinin olup olmadığını döner. Veri varsa True, yoksa False.
     Task<bool> AnyAsyncTask(Expression<Func<T, bool>> expression);
+    Task<T?> SingleAsyncTask(Expression<Func<T, bool>> expression);
     
     //Tabloya veri ekleme.
     Task AddAsyncTask(T entity);

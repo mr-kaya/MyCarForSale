@@ -64,6 +64,14 @@ public class CarFeaturesController : CustomBaseController
         return CreateActionResult(CustomResponseDto<CarFeaturesEntityDto>.Success(200, carDto));
     }
 
+    [HttpGet("[action]/{id}")]
+    public async Task<IActionResult> GetWhereTask(int id)
+    {
+        var whereData = _carFeaturesService.Where(entity => entity.PublishUserId == id);
+        var whereDataDto = _mapper.Map<List<CarFeaturesEntityDto>>(whereData);
+        return CreateActionResult(CustomResponseDto<List<CarFeaturesEntityDto>>.Success(200, whereDataDto));
+    }
+    
     [HttpPost]
     public async Task<IActionResult> Save(CarFeaturesEntityDto carFeaturesEntityDto)
     {

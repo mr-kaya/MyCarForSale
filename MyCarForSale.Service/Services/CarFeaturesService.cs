@@ -4,6 +4,7 @@ using MyCarForSale.Core.Entities;
 using MyCarForSale.Core.Repositories;
 using MyCarForSale.Core.Services;
 using MyCarForSale.Core.UnitOfWorks;
+using MyCarForSale.Service.Exceptions;
 
 namespace MyCarForSale.Service.Services;
 
@@ -39,6 +40,11 @@ public class CarFeaturesService : GenericService<CarFeaturesEntity>, ICarFeature
     public async Task<CarFeaturesWithImageAndClassificationAndUserAccountDto> GetCarWithId(int id)
     {
         var selectedCar = await _carFeaturesRepository.GetCarWithId(id);
+        if (selectedCar == null)
+        {
+            throw new NotFoundException($"Vehicle information not found.");
+        }
+        
         return _mapper.Map<CarFeaturesWithImageAndClassificationAndUserAccountDto>(selectedCar);
     }
 

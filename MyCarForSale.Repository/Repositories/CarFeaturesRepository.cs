@@ -37,7 +37,7 @@ public class CarFeaturesRepository : GenericRepository<CarFeaturesEntity>, ICarF
     public async Task<CarFeaturesEntity> GetCarWithId(int id)
     {
         return await _dbContext.FeaturesBaseEntities.Include(x => x.CarImagesEntities)
-            .Include(y => y.MainClassificationEntity).Include(z => z.UserAccountEntity).FirstAsync(x => x.Id == id);
+            .Include(y => y.MainClassificationEntity).Include(z => z.UserAccountEntity).FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public void UpdateSaleCarInformation(CarFeaturesEntity entity)

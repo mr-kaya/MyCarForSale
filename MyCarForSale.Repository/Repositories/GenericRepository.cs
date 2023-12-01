@@ -19,7 +19,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         return _dbSet.AsNoTracking().AsQueryable();
     }
-
+    
     public async Task<T> GetByIdAsyncTask(int id)
     {
         return await _dbSet.FindAsync(id);
@@ -33,6 +33,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public async Task<bool> AnyAsyncTask(Expression<Func<T, bool>> expression)
     {
         return await _dbSet.AnyAsync(expression);
+    }
+
+    public async Task<T?> SingleAsyncTask(Expression<Func<T, bool>> expression)
+    {
+        return await _dbSet.SingleOrDefaultAsync(expression);
     }
 
     public async Task AddAsyncTask(T entity)

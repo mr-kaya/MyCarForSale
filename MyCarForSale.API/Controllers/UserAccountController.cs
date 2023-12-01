@@ -33,6 +33,18 @@ public class UserAccountController : CustomBaseController
         return CreateActionResult(CustomResponseDto<UserAccountEntityDto>.Success(200, accountDto));
     }
 
+    [HttpGet("[action]")]
+    public async Task<IActionResult> LoginUser(string userEmail, string userPassword)
+    {
+        //var emailAndPasswordBool = await _service.AnyAsyncTask(entity => entity.Email == userEmail && entity.Password == userPassword); //Email & Password var mı diye kontrol eder.
+        
+        var emailAndPasswordEntity =
+            await _service.SingleAsyncTask(entity => entity.Email == userEmail && entity.Password == userPassword);
+        var emailAndPasswordDto = _mapper.Map<UserAccountEntityDto>(emailAndPasswordEntity);
+        return CreateActionResult(CustomResponseDto<UserAccountEntityDto>.Success(200, emailAndPasswordDto));
+    
+    }
+    
     [HttpPost]
     public async Task<IActionResult> Save(UserAccountEntityDto userAccountEntityDto)
     {

@@ -1,8 +1,10 @@
 ﻿using System.Linq.Expressions;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using MyCarForSale.Core.Repositories;
 using MyCarForSale.Core.Services;
 using MyCarForSale.Core.UnitOfWorks;
+using MyCarForSale.Service.Exceptions;
 
 namespace MyCarForSale.Service.Services;
 
@@ -25,7 +27,14 @@ public class GenericService<T> : IGenericService<T> where T : class
 
     public async Task<T> GetByIdAsyncTask(int id)
     {
-        return await _genericRepository.GetByIdAsyncTask(id);
+        var hasProduct = await _genericRepository.GetByIdAsyncTask(id);
+
+        if (hasProduct == null)
+        {
+            throw new NotFoundException($"{typeof(T).Name} not found.");
+        }
+
+        return hasProduct;
     }
 
     public IQueryable<T> Where(Expression<Func<T, bool>> expression)
@@ -36,6 +45,17 @@ public class GenericService<T> : IGenericService<T> where T : class
     public async Task<bool> AnyAsyncTask(Expression<Func<T, bool>> expression)
     {
         return await _genericRepository.AnyAsyncTask(expression);
+    }
+
+    public async Task<T?> SingleAsyncTask(Expression<Func<T, bool>> expression)
+    {
+        var hasProduct = await _genericRepository.SingleAsyncTask(expression);
+        if (hasProduct == null)
+        {
+            throw new UnauthorizedException($"email or password incorrect");
+        }
+
+        return hasProduct;
     }
 
     public async Task AddAsyncTask(T entity)
