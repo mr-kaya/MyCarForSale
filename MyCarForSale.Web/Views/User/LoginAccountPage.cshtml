@@ -9,11 +9,11 @@
     <div class="w-full min-h-[85vh] flex flex-wrap justify-center items-center p-2">
         <div class="overflow-hidden flex justify-center p-20 bg-blue-100 rounded-xl">
             <form method="post" class="flex flex-col justify-between">
+                <span class="flex flex-row justify-center  mb-10 font-bold text-xl">Member Login</span>
                 @if (TempData["Error401"] != null)
                 {
-                    <span class="bg-red-500 text-white rounded-2xl text-center">@TempData["Error401"]</span>
+                    <span class="inline-block text-center align-middle bg-red-600 text-white rounded-2xl mb-6 p-1 font-semibold">@TempData["Error401"]</span>
                 }
-                <span class="flex flex-row justify-center  mb-10 font-bold text-xl">Member Login</span>
                 <div class="flex flex-row justify-items-center bg-white rounded-2xl mb-6 h-12 w-80">
                     <svg class="flex flex-col justify-between m-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="25" height="25">
                         <path d="M2.5371094 6L13.810547 16.521484C14.477547 17.145484 15.523453 17.145484 16.189453 16.521484L27.462891 6L2.5371094 6 z M 1 7.3007812L1 24L29 24L29 7.3007812L17.554688 17.982422C16.837688 18.651422 15.919 18.986328 15 18.986328C14.081 18.986328 13.162312 18.651422 12.445312 17.982422L1 7.3007812 z" fill="#646464"/>

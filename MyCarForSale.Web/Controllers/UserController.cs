@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using MyCarForSale.Core.DTOs;
 using MyCarForSale.Web.Services;
 
@@ -28,12 +30,18 @@ public class UserController : Controller
             TempData["Error401"] = "email or password incorrect";
             return RedirectToAction("LoginAccountPage", "User");
         }
-        return Json(accountAsync);
+        
+        Response.Cookies.Append("jwtToken", accountAsync.AuthToken);
+        
+        return RedirectToAction("Index", "Home");
     }
     
     
-    public IActionResult RegisterAccountPage()
+    public async Task<IActionResult> RegisterAccountPage()
     {
-        return View();
+        var allAccount = await _userAccountService.AllUserDeneme();
+        
+        
+        return View(allAccount);
     }
 }

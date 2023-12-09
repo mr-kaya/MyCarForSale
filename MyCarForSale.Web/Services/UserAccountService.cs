@@ -12,13 +12,15 @@ public class UserAccountService
         _httpClient = httpClient;
     }
 
-    public async Task<UserAccountEntityDto> LoginAccountAsync(string userEmail, string userPassword)
+    public async Task<UserAccountJwt> LoginAccountAsync(string userEmail, string userPassword)
     {
+        var encodedEmail = Uri.EscapeDataString(userEmail);
+        var encodedPassword = Uri.EscapeDataString(userPassword);
+        var apiUrl = $"UserAccount/LoginUser?userEmail={encodedEmail}&userPassword={encodedPassword}";
+        
         try
         {
-            var response =
-                await _httpClient.GetFromJsonAsync<CustomResponseDto<UserAccountEntityDto>>(
-                    $"UserAccount/LoginUser?userEmail={userEmail}&userPassword={userPassword}");
+            var response = await _httpClient.GetFromJsonAsync<CustomResponseDto<UserAccountJwt>>(apiUrl);
             
             if (response is { Erorrs: null })
             {
@@ -31,6 +33,14 @@ public class UserAccountService
         {
             return null!;
         }
+    }
+
+    public async Task<List<UserAccountEntityDto>> AllUserDeneme()
+    {
+        var apiUrl = $"UserAccount/All";
+        var response = await _httpClient.GetFromJsonAsync<CustomResponseDto<List<UserAccountEntityDto>>>(apiUrl);
+
+        return response!.Data;
     }
     
 }

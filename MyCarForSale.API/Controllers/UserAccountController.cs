@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyCarForSale.Core.DTOs;
 using MyCarForSale.Core.Entities;
@@ -6,26 +8,31 @@ using MyCarForSale.Core.Services;
 
 namespace MyCarForSale.API.Controllers;
 
+[Authorize]
 public class UserAccountController : CustomBaseController
 {
     private readonly IMapper _mapper;
     private readonly IGenericService<UserAccountEntity> _service;
+    private readonly IAuthService _authService;
 
-    public UserAccountController(IMapper mapper, IGenericService<UserAccountEntity> service)
+    public UserAccountController(IMapper mapper, IGenericService<UserAccountEntity> service, IAuthService authService)
     {
         _mapper = mapper;
         _service = service;
+        _authService = authService;
     }
-
+    
     [HttpGet]
+    [Authorize(Roles = "Root")]
     public async Task<IActionResult> All()
     {
         var accounts = await _service.GetAllAsyncTask();
         var accountsDto = _mapper.Map<List<UserAccountEntityDto>>(accounts.ToList());
         return CreateActionResult(CustomResponseDto<List<UserAccountEntityDto>>.Success(200, accountsDto));
     }
-
+    
     [HttpGet("{id}")]
+    [Authorize(Roles = "Root")]
     public async Task<IActionResult> GetById(int id)
     {
         var account = await _service.GetByIdAsyncTask(id);
@@ -34,6 +41,7 @@ public class UserAccountController : CustomBaseController
     }
 
     [HttpGet("[action]")]
+    [AllowAnonymous]
     public async Task<IActionResult> LoginUser(string userEmail, string userPassword)
     {
         //var emailAndPasswordBool = await _service.AnyAsyncTask(entity => entity.Email == userEmail && entity.Password == userPassword); //Email & Password var mı diye kontrol eder.
@@ -41,11 +49,12 @@ public class UserAccountController : CustomBaseController
         var emailAndPasswordEntity =
             await _service.SingleAsyncTask(entity => entity.Email == userEmail && entity.Password == userPassword);
         var emailAndPasswordDto = _mapper.Map<UserAccountEntityDto>(emailAndPasswordEntity);
-        return CreateActionResult(CustomResponseDto<UserAccountEntityDto>.Success(200, emailAndPasswordDto));
-    
+        var result = await _authService.LoginUserAsync(emailAndPasswordDto);
+        return CreateActionResult(CustomResponseDto<JwtSettings>.Success(200, result));
     }
     
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> Save(UserAccountEntityDto userAccountEntityDto)
     {
         var addUserAccount = _mapper.Map<UserAccountEntity>(userAccountEntityDto);

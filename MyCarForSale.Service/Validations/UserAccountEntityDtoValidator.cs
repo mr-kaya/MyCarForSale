@@ -7,6 +7,7 @@ public class UserAccountEntityDtoValidator : AbstractValidator<UserAccountEntity
 {
     public UserAccountEntityDtoValidator()
     {
+        RuleFor(x => x.Authorization).NotNull().NotEmpty();
         RuleFor(x => x.Email).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
             .WithMessage("{PropertyName} alanı boş bırakılamaz.").EmailAddress()
             .WithMessage("Lütfen geçerli bir e-posta adresi giriniz.");

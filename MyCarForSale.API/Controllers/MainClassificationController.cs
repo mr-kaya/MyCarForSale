@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyCarForSale.Core.DTOs;
 using MyCarForSale.Core.Entities;
@@ -6,6 +7,7 @@ using MyCarForSale.Core.Services;
 
 namespace MyCarForSale.API.Controllers;
 
+[Authorize]
 public class MainClassificationController : CustomBaseController
 {
     private readonly IMapper _mapper;
@@ -19,6 +21,7 @@ public class MainClassificationController : CustomBaseController
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> All()
     {
         var classification = await _service.GetAllAsyncTask();
@@ -27,6 +30,7 @@ public class MainClassificationController : CustomBaseController
     }
 
     [HttpGet("{id}")]
+    [AllowAnonymous]
     public async Task<IActionResult> GetById(int id)
     {
         var getClassification = await _service.GetByIdAsyncTask(id);
@@ -35,6 +39,7 @@ public class MainClassificationController : CustomBaseController
     }
 
     [HttpPost]
+    [Authorize(Roles = "Root, Publisher")]
     public async Task<IActionResult> Save(MainClassificationEntityDto mainClassificationEntityDto)
     {
         var classification = _mapper.Map<MainClassificationEntity>(mainClassificationEntityDto);
@@ -44,13 +49,16 @@ public class MainClassificationController : CustomBaseController
     }
 
     [HttpPut]
+    [Authorize(Roles = "Root, Publisher")]
     public async Task<IActionResult> Update(MainClassificationEntityDto mainClassificationEntityDto)
     {
         var classification = _mapper.Map<MainClassificationEntity>(mainClassificationEntityDto);
         await _service.UpdateAsyncTask(classification);
         return CreateActionResult(CustomNoContentResponseDto.Success(204));
     }
+    
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Root, Publisher")]
     public async Task<IActionResult> Delete(int id)
     {
         var classification = await _service.GetByIdAsyncTask(id);

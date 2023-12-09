@@ -3,6 +3,7 @@
 public class UserAccountEntityDto
 {
     public int Id { get; set; }
+    public string Authorization { get; set; } = "User";
     public string Email { get; set; }
     public string Password { get; set; }
     public string Name { get; set; }
