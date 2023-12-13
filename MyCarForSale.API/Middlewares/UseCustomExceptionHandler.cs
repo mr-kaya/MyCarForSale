@@ -19,6 +19,7 @@ public static class UseCustomExceptionHandler
                 {
                     ClientSideException => 400,
                     UnauthorizedException => 401,
+                    ForbiddenException => 403,
                     NotFoundException => 404,
                     _ => 500
                 };

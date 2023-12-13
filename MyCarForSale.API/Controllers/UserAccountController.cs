@@ -1,16 +1,20 @@
-﻿using AutoMapper;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyCarForSale.Core.DTOs;
 using MyCarForSale.Core.Entities;
 using MyCarForSale.Core.Services;
+using MyCarForSale.Service.Exceptions;
 
 namespace MyCarForSale.API.Controllers;
 
 [Authorize]
 public class UserAccountController : CustomBaseController
 {
+    private static JwtSettings _getToken;
     private readonly IMapper _mapper;
     private readonly IGenericService<UserAccountEntity> _service;
     private readonly IAuthService _authService;
@@ -32,10 +36,20 @@ public class UserAccountController : CustomBaseController
     }
     
     [HttpGet("{id}")]
-    [Authorize(Roles = "Root")]
     public async Task<IActionResult> GetById(int id)
     {
         var account = await _service.GetByIdAsyncTask(id);
+
+        var handler = new JwtSecurityTokenHandler();
+        var jsonToken = handler.ReadToken(_getToken.Key);
+        var token = jsonToken as JwtSecurityToken;
+        var tokenUserId = token.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+        var tokenUserAuthorization = token.Claims.First(claim => claim.Type == ClaimTypes.Role).Value;
+        if (account.Id.ToString() != tokenUserId && tokenUserAuthorization == "User")
+        {
+            throw new ForbiddenException("Authorization error");
+        }
+        
         var accountDto = _mapper.Map<UserAccountEntityDto>(account);
         return CreateActionResult(CustomResponseDto<UserAccountEntityDto>.Success(200, accountDto));
     }
@@ -49,8 +63,8 @@ public class UserAccountController : CustomBaseController
         var emailAndPasswordEntity =
             await _service.SingleAsyncTask(entity => entity.Email == userEmail && entity.Password == userPassword);
         var emailAndPasswordDto = _mapper.Map<UserAccountEntityDto>(emailAndPasswordEntity);
-        var result = await _authService.LoginUserAsync(emailAndPasswordDto);
-        return CreateActionResult(CustomResponseDto<JwtSettings>.Success(200, result));
+        _getToken = await _authService.LoginUserAsync(emailAndPasswordDto);
+        return CreateActionResult(CustomResponseDto<JwtSettings>.Success(200, _getToken));
     }
     
     [HttpPost]

@@ -1,0 +1,27 @@
+﻿@model MyCarForSale.Core.DTOs.UserAccountEntityDto
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<table>
+    <thead>
+    <th>Kullanıcı Bilgileri</th>
+    </thead>
+    <tbody>
+    <tr>@Model.Email</tr>
+    <tr>@Model.Name</tr>
+    <tr>@Model.Surname</tr>
+    <tr>@Model.Country</tr>
+    <tr>@Model.Province</tr>
+    <tr>@Model.District</tr>
+    <tr>@Model.ZipCode</tr>
+    <tr>@Model.FullAddress</tr>    
+    <tr>@Model.PhoneNumber</tr>    
+    <tr>@Model.Birthday</tr>    
+    <tr>@Model.Id</tr>    
+    </tbody>
+</table>
+
+<h2>title</h2>
