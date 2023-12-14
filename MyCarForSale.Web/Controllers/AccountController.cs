@@ -15,7 +15,7 @@ public class AccountController : Controller
 
     public async Task<IActionResult> AccountDetailsPage()
     {
-        var userAccountDto = _accountService.GetUserById();
-        return View(await userAccountDto);
+        //var userAccountDto = _accountService.GetUserById();
+        return View(/*await userAccountDto*/);
     }   
 }
