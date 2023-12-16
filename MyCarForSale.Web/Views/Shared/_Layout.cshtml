@@ -1,6 +1,6 @@
 ﻿@using MyCarForSale.Web.Controllers
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -61,6 +61,12 @@
                                 </li>
                                 <li>
                                     <a class="text-black hover:bg-gray-200 border-b border-gray-300 md:hover:bg-transparent md:border-0 block md:hover:text-blue-700 md:p-0" asp-area="">Post a vehicle ad</a>
+                                </li>
+                                <li>
+                                    <label class="text-2xl font-semibold text-blue-600">/</label>
+                                </li>
+                                <li>
+                                    <a id="logout" class="text-red-600 hover:text-red-800 border-b border-gray-300 md:hover:bg-transparent md:border-0 block" asp-area="" asp-controller="User" asp-action="LogoutAccount">Logout</a>
                                 </li>
                                 
                             }

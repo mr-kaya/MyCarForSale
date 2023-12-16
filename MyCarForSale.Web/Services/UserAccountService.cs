@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
@@ -51,7 +52,7 @@ public class UserAccountService
     public async Task<UserAccountEntityDto> GetUserById()
     {
         _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer "+UserController.TokenKey);
-
+        Console.WriteLine("Key = "+UserController.TokenKey);
         var handler = new JwtSecurityTokenHandler();
         var jsonToken = handler.ReadToken(UserController.TokenKey);
         var token = jsonToken as JwtSecurityToken;
@@ -67,9 +68,64 @@ public class UserAccountService
                 return response.Data;
             }
         }
-
-
         throw new NotFoundException("Valid user not found.");
     }
-    
+
+    public async Task UpdateUser(string email, string name, string surname, string birthday, string phone)
+    {
+        var getUserValueById = await GetUserById();
+        
+        getUserValueById.Email = email;
+        getUserValueById.Name = name;
+        getUserValueById.Surname = surname;
+        
+        
+        if (new[] {".", ",", "-", "/", " "}.Any(findValue => birthday.Contains(findValue)) && birthday != null)
+        {
+            getUserValueById.Birthday = DateTime.Parse(birthday, new CultureInfo("tr-TR"));
+        }
+        getUserValueById.PhoneNumber = phone;
+        var apiUrl = $"UserAccount";
+        var response = await _httpClient.PutAsJsonAsync(apiUrl, getUserValueById);
+        
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new ArgumentException("Failed to update user.");
+        }
+    }
+
+    public async Task UpdatePassword(string password1, string password2)
+    {
+        var getUserValueId = await GetUserById();
+
+        if (password1 == password2)
+        {
+            getUserValueId.Password = password1;
+            var apiUrl = $"UserAccount";
+            var response = await _httpClient.PutAsJsonAsync(apiUrl, getUserValueId);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new ArgumentException("Failed to update password.");
+            }
+        }
+    }
+
+    public async Task UpdateAddress(string province, string district, string fullAddress,
+        string zipCode)
+    {
+        Console.WriteLine("değerler = {0} {1} {2} {3}", province, district, fullAddress, zipCode);
+        var getUserValueId = await GetUserById();
+
+        getUserValueId.Province = province;
+        getUserValueId.District = district;
+        getUserValueId.FullAddress = fullAddress;
+        getUserValueId.ZipCode = int.Parse(zipCode);
+
+        var apiUrl = $"UserAccount";
+        var response = await _httpClient.PutAsJsonAsync(apiUrl, getUserValueId);
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new ArgumentException("Failed to update address.");
+        }
+    }
 }

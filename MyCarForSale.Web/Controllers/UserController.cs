@@ -47,4 +47,11 @@ public class UserController : Controller
         
         return View(allAccount);
     }
+
+    public IActionResult  LogoutAccount()
+    {
+        TokenKey = null;
+        
+        return RedirectToAction("Index", "Home");
+    }
 }
