@@ -50,10 +50,6 @@ public class GenericService<T> : IGenericService<T> where T : class
     public async Task<T?> SingleAsyncTask(Expression<Func<T, bool>> expression)
     {
         var hasProduct = await _genericRepository.SingleAsyncTask(expression);
-        if (hasProduct == null)
-        {
-            throw new UnauthorizedException($"email or password incorrect");
-        }
 
         return hasProduct;
     }

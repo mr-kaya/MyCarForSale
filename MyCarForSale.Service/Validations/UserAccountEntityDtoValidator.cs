@@ -8,37 +8,41 @@ public class UserAccountEntityDtoValidator : AbstractValidator<UserAccountEntity
     public UserAccountEntityDtoValidator()
     {
         RuleFor(x => x.Authorization).NotNull().NotEmpty();
-        RuleFor(x => x.Email).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
-            .WithMessage("{PropertyName} alanı boş bırakılamaz.").EmailAddress()
-            .WithMessage("Lütfen geçerli bir e-posta adresi giriniz.");
-        RuleFor(x => x.Name).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
-            .WithMessage("{PropertyName} alanı boş bırakılamaz.").MaximumLength(50)
-            .WithMessage("İsminiz 50 karakteri geçmemelidir.");
-        RuleFor(x => x.Surname).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
-            .WithMessage("{PropertyName} alanı boş bırakılamaz.").MaximumLength(50)
-            .WithMessage("Soyadınız 50 karakteri geçmemelidir.");
+        RuleFor(x => x.Email).NotNull().WithMessage("Enter your {PropertyName}.").NotEmpty()
+            .WithMessage("Enter your {PropertyName}.").EmailAddress().NotEmpty().WithMessage("Enter your {PropertyName}.").NotNull().WithMessage("Enter your {PropertyName}.")
+            .WithMessage("Please enter a valid e-mail address.");
+        RuleFor(x => x.Password).NotNull().WithMessage("Enter your {PropertyName}.").NotEmpty()
+            .WithMessage("Enter your {PropertyName}.").MinimumLength(6)
+            .WithMessage("Minimum 6 characters required").MaximumLength(Int32.MaxValue).WithMessage("You have reached the character limit. Congratulations");
+        RuleFor(x => x.Name).NotNull().WithMessage("Enter your {PropertyName}.").NotEmpty()
+            .WithMessage("Enter your {PropertyName}.").MaximumLength(50)
+            .WithMessage("Maximum 50 characters");
+        RuleFor(x => x.Surname).NotNull().WithMessage("Enter your {PropertyName}.").NotEmpty()
+            .WithMessage("Enter your {PropertyName}.").MaximumLength(50)
+            .WithMessage("Maximum 50 characters");
         RuleFor(x => x.Birthday).Must(birthday => (DateTime.Now.Year - birthday.Year) >= 18)
-            .WithMessage("Üye olmak için 18 yaşından büyük olmalısınız.")
+            .WithMessage("You must be over 18 to register.")
             .Must(birthday => (DateTime.Now.Year - birthday.Year) <= 100)
-            .WithMessage("Lütfen gerçek doğum tarihinizi giriniz.");
-        RuleFor(x => x.PhoneNumber).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
-            .WithMessage("{PropertyName} alanı boş bırakılamaz.").Must(x => x.Length > 9 && x.Length < 12)
-            .WithMessage("Gerçek bir telefon numarası giriniz.").Must(x => int.TryParse(x, out _))
-            .WithMessage("Lütfen ülke kodu (+) kullanmayın.");
-        RuleFor(x => x.Country).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
-            .WithMessage("{PropertyName} alanı boş bırakılamaz.");
-        RuleFor(x => x.Province).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
-            .WithMessage("{PropertyName} alanı boş bırakılamaz.");
-        RuleFor(x => x.District).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
-            .WithMessage("{PropertyName} alanı boş bırakılamaz.");
-        RuleFor(x => x.FullAddress).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
-            .WithMessage("{PropertyName} alanı boş bırakılamaz.").MaximumLength(254)
-            .WithMessage("Karakter sınırını aştınız. Lütfen, en fazla 254 karakter kullanın.");
+            .WithMessage("Please enter your actual date of birth.");
+        RuleFor(x => x.PhoneNumber).NotNull().WithMessage("Enter your {PropertyName}.").NotEmpty()
+            .WithMessage("Enter your {PropertyName}.").MinimumLength(10)
+            .WithMessage("Enter a real phone number.").MaximumLength(11)
+            .WithMessage("Enter a real phone number.").Must(x => double.TryParse(x, out _))
+            .WithMessage("Only number and (+)");
+        RuleFor(x => x.Country).NotNull().WithMessage("Enter your {PropertyName}.").NotEmpty()
+            .WithMessage("Enter your {PropertyName}.");
+        RuleFor(x => x.Province).NotNull().WithMessage("Enter your {PropertyName}.").NotEmpty()
+            .WithMessage("Enter your {PropertyName}.");
+        RuleFor(x => x.District).NotNull().WithMessage("Enter your {PropertyName}.").NotEmpty()
+            .WithMessage("Enter your {PropertyName}.");
+        RuleFor(x => x.FullAddress).NotNull().WithMessage("Enter your {PropertyName}.").NotEmpty()
+            .WithMessage("Enter your {PropertyName}.").MaximumLength(254)
+            .WithMessage("Maximum 254 characters");
 
-        RuleFor(x => x.ZipCode).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
-            .WithMessage("{PropertyName} alanı boş bırakılamaz.").Must(x => int.TryParse(x.ToString(), out _))
-            .WithMessage("Lütfen sadece rakam giriniz.").Must(x => x.ToString().Length < 12)
-            .WithMessage("Gerçek bir posta kodu giriniz.");
+        RuleFor(x => x.ZipCode).NotNull().WithMessage("Enter your {PropertyName}").NotEmpty()
+            .WithMessage("Enter your {PropertyName}").Must(x => int.TryParse(x.ToString(), out _))
+            .WithMessage("Please enter only numbers").Must(x => x.ToString().Length < 12)
+            .WithMessage("Enter a real zip code.");
     }
     
 }

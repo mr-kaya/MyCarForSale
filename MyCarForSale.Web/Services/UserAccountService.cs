@@ -40,14 +40,6 @@ public class UserAccountService
             return null!;
         }
     }
-
-    public async Task<List<UserAccountEntityDto>> AllUserDeneme()
-    {
-        var apiUrl = $"UserAccount/All";
-        var response = await _httpClient.GetFromJsonAsync<CustomResponseDto<List<UserAccountEntityDto>>>(apiUrl);
-
-        return response!.Data;
-    }
     
     public async Task<UserAccountEntityDto> GetUserById()
     {
@@ -71,11 +63,43 @@ public class UserAccountService
         throw new NotFoundException("Valid user not found.");
     }
 
-    public async Task UpdateUser(string email, string name, string surname, string birthday, string phone)
+    public async Task<string> GetValidUserEmail(string email)
+    {
+        var encodeEmail = Uri.EscapeDataString(email);
+        var apiUrl = $"UserAccount/FindEmail?userEmail={encodeEmail}";
+
+        var response = await _httpClient.GetAsync(apiUrl);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return "";
+        }
+        
+        return "This email address is already registered";
+    }
+
+    public async Task DeleteUser(int id)
+    {
+        var encodeId = Uri.EscapeDataString(id.ToString());
+        
+        _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer "+UserController.TokenKey);
+        var apiUrl = $"UserAccount/{encodeId}";
+        var response = await _httpClient.DeleteAsync(apiUrl);
+
+    }
+    
+    public async Task<HttpResponseMessage> PostUser(UserAccountEntityDto userAccountEntityDto)
+    {
+        var apiUrl = $"UserAccount";
+        var response = await _httpClient.PostAsJsonAsync(apiUrl, userAccountEntityDto);
+
+        return response;
+    }
+    
+    public async Task UpdateUser(string name, string surname, string birthday, string phone)
     {
         var getUserValueById = await GetUserById();
         
-        getUserValueById.Email = email;
         getUserValueById.Name = name;
         getUserValueById.Surname = surname;
         
@@ -119,7 +143,7 @@ public class UserAccountService
         getUserValueId.Province = province;
         getUserValueId.District = district;
         getUserValueId.FullAddress = fullAddress;
-        getUserValueId.ZipCode = int.Parse(zipCode);
+        getUserValueId.ZipCode = zipCode;
 
         var apiUrl = $"UserAccount";
         var response = await _httpClient.PutAsJsonAsync(apiUrl, getUserValueId);

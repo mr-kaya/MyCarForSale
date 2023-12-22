@@ -28,7 +28,7 @@ public class CustomResponseDto<T>
 public class CustomNoContentResponseDto
 {
     public int StatusCode { get; set; }
-    public List<String> Erorrs { get; set; }
+    public List<String> Errors { get; set; }
     
     public static CustomNoContentResponseDto Success(int statusCode)
     {
@@ -37,11 +37,11 @@ public class CustomNoContentResponseDto
 
     public static CustomNoContentResponseDto Fail(int statusCode, List<string> errors)
     {
-        return new CustomNoContentResponseDto() { StatusCode = statusCode, Erorrs = errors };
+        return new CustomNoContentResponseDto() { StatusCode = statusCode, Errors = errors };
     }
 
     public static CustomNoContentResponseDto Fail(int statusCode, string error)
     {
-        return new CustomNoContentResponseDto() { StatusCode = statusCode, Erorrs = new List<string>() { error } };
+        return new CustomNoContentResponseDto() { StatusCode = statusCode, Errors = new List<string>() { error } };
     }
 }

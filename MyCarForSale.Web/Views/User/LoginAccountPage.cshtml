@@ -1,4 +1,4 @@
-﻿@model System.Threading.Tasks.Task<MyCarForSale.Core.DTOs.UserAccountEntityDto>
+﻿@model MyCarForSale.Core.DTOs.UserAccountEntityDto
 
 @{
     ViewBag.Title = "title";
@@ -9,22 +9,25 @@
     <div class="w-full min-h-[85vh] flex flex-wrap justify-center items-center p-2">
         <div class="overflow-hidden flex justify-center p-20 bg-blue-100 rounded-xl">
             <form method="post" class="flex flex-col justify-between">
-                <span class="flex flex-row justify-center  mb-10 font-bold text-xl">Member Login</span>
+                <span class="flex flex-row justify-center  mb-10 font-bold text-xl">Sign In</span>
+                
                 @if (TempData["Error401"] != null)
                 {
                     <span class="inline-block text-center align-middle bg-red-600 text-white rounded-2xl mb-6 p-1 font-semibold">@TempData["Error401"]</span>
                 }
+                <span asp-validation-for="Email" class="flex flex-row font-semibold text-red-600"></span>
                 <div class="flex flex-row justify-items-center bg-white rounded-2xl mb-6 h-12 w-80">
                     <svg class="flex flex-col justify-between m-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="25" height="25">
                         <path d="M2.5371094 6L13.810547 16.521484C14.477547 17.145484 15.523453 17.145484 16.189453 16.521484L27.462891 6L2.5371094 6 z M 1 7.3007812L1 24L29 24L29 7.3007812L17.554688 17.982422C16.837688 18.651422 15.919 18.986328 15 18.986328C14.081 18.986328 13.162312 18.651422 12.445312 17.982422L1 7.3007812 z" fill="#646464"/>
                     </svg>
-                    <input type="email" id="userEmail" name="userEmail" required class="flex flex-col justify-between mx-3 py-3 border-2 border-white focus:outline-0 w-full" placeholder="Email"/>
+                    <input type="email" asp-for="Email" class="flex flex-col justify-between mx-3 py-3 border-2 border-white focus:outline-0 w-full" placeholder="Email"/>
                 </div>
+                <span asp-validation-for="Password" class="flex flex-row font-semibold text-red-600"></span>
                 <div class="flex flex-row justify-items-center bg-white rounded-2xl mb-6 h-12">
                     <svg class="flex flex-col justify-between m-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" width="25" height="25">
                         <path d="M13 0C10.320313 0 8.195313 0.832031 6.84375 2.34375C5.492188 3.855469 5 5.839844 5 7.90625L5 9L8 9L8 7.90625C8 6.3125 8.359375 5.128906 9.0625 4.34375C9.765625 3.558594 10.898438 3 13 3C15.105469 3 16.238281 3.535156 16.9375 4.3125C17.636719 5.089844 18 6.296875 18 7.90625L18 9L21 9L21 7.90625C21 5.828125 20.511719 3.820313 19.15625 2.3125C17.800781 0.804688 15.675781 0 13 0 Z M 5 10C3.34375 10 2 11.34375 2 13L2 23C2 24.65625 3.34375 26 5 26L21 26C22.65625 26 24 24.65625 24 23L24 13C24 11.34375 22.65625 10 21 10 Z M 7 16C8.105469 16 9 16.894531 9 18C9 19.105469 8.105469 20 7 20C5.894531 20 5 19.105469 5 18C5 16.894531 5.894531 16 7 16 Z M 13 16C14.105469 16 15 16.894531 15 18C15 19.105469 14.105469 20 13 20C11.894531 20 11 19.105469 11 18C11 16.894531 11.894531 16 13 16 Z M 19 16C20.105469 16 21 16.894531 21 18C21 19.105469 20.105469 20 19 20C17.894531 20 17 19.105469 17 18C17 16.894531 17.894531 16 19 16Z" fill="#646464"/>
                     </svg>
-                    <input type="password" id="userPassword" name="userPassword" required class="flex flex-col justify-between mx-3 py-3 border-2 border-white focus:outline-0 w-full" placeholder="Password"/>
+                    <input type="password" asp-for="Password" class="flex flex-col justify-between mx-3 py-3 border-2 border-white focus:outline-0 w-full" placeholder="Password"/>
                 </div>
                 <button type="submit" asp-controller="User" asp-action="LoginAccount" class="flex flex-row bg-blue-600 justify-center p-2 rounded-3xl text-white text-lg font-semibold uppercase hover:bg-blue-400 duration-300 shadow-xl">Login</button>
             </form>

@@ -56,6 +56,20 @@ public class UserAccountController : CustomBaseController
 
     [HttpGet("[action]")]
     [AllowAnonymous]
+    public async Task<IActionResult> FindEmail(string userEmail)
+    {
+        var emailEntity = await _service.SingleAsyncTask(entity => entity.Email == userEmail);
+
+        if (await _service.AnyAsyncTask(entity => entity.Email == userEmail))
+        {
+            return CreateActionResult(CustomNoContentResponseDto.Fail(409, "Bu e-posta zaten kayıtlı."));
+        }
+
+        return CreateActionResult(CustomNoContentResponseDto.Success(200));
+    }
+
+    [HttpGet("[action]")]
+    [AllowAnonymous]
     public async Task<IActionResult> LoginUser(string userEmail, string userPassword)
     {
         //var emailAndPasswordBool = await _service.AnyAsyncTask(entity => entity.Email == userEmail && entity.Password == userPassword); //Email & Password var mı diye kontrol eder.

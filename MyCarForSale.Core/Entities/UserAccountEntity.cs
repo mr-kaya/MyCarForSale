@@ -15,5 +15,5 @@ public class UserAccountEntity
     public string Province { get; set; }
     public string District { get; set; }
     public string FullAddress { get; set; }
-    public int ZipCode { get; set; }
+    public string ZipCode { get; set; }
 }
