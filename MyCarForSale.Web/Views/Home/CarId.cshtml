@@ -1,4 +1,5 @@
-﻿@model MyCarForSale.Core.DTOs.CarFeaturesWithImageAndClassificationAndUserAccountDto
+﻿@using MyCarForSale.Web.Controllers
+@model MyCarForSale.Core.DTOs.CarFeaturesWithImageAndClassificationAndUserAccountDto
 
 @{
     ViewBag.Title = "title";
@@ -25,6 +26,13 @@
                 <br/>
                 <label class="px-24">@Model.MainClassificationEntityMainClassification</label>
                 <br/>
+                @if (UserController.TokenKey != null)
+                {
+                    <form method="post">
+                        <input type="hidden" name="carId" value="@Model.Id"/>
+                        <button type="submit" asp-controller="Favorites" asp-action="AddFavorites" class="flex px-24 mx-5 my-3">Add Favorites</button>
+                    </form>
+                }
             </div>
         </div>
         <div class="my-[10vh]"></div>

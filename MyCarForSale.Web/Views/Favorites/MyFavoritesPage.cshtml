@@ -1,0 +1,387 @@
+﻿@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<MyCarForSale.Core.DTOs.CarFeaturesWithImageAndClassificationAndUserAccountDto>?
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+    
+    var carFeaturesAllIds = Model?.Select(p => p.Id).ToList();
+    var json = Json.Serialize(carFeaturesAllIds);
+}
+
+<div class="container mx-auto flex flex-row justify-around">
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="flex-col text-center mx-5">
+            <table id="myTable">
+                <thead>
+                    <tr class="sticky top-0 backdrop-blur-sm mix-blend-multiply bg-blue-200">
+                        <th class=" mx-auto py-2 px-24 whitespace-nowrap"></th>
+                        <th class="mx-auto py-2 px-10 whitespace-nowrap">Ad Title</th>
+                        <th onclick="sortTable(3)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Price</th>
+                        <th onclick="sortTable(4)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Horse Power</th>
+                        <th onclick="sortTable(5)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Torque</th>
+                        <th onclick="sortTable(6)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Transmission</th>
+                        <th onclick="sortTable(7)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Year</th>
+                        <th onclick="sortTable(8)" class="mx-auto py-2 px-8 whitespace-normal hover:cursor-pointer">Favorite</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr onclick="rowClick('@item.Id', event)" class="h-4 w-auto even:bg-blue-100 odd:bg-white hover:bg-blue-50 hover:cursor-pointer">
+                        <td class="hidden">
+                            <a id="CarDeleteHref_@item.Id" class="decoration-0" asp-area="" asp-controller="Favorites" asp-action="DeleteFavoriteId" asp-route-id="@item.Id">Sil</a>
+                            <a id="CarDetailsHref_@item.Id" class=" decoration-0" asp-area="" asp-controller="Home" asp-action="CarId" asp-route-id="@item.Id">Giriş</a>
+                        </td>
+                        <td class="w-12 transition ease-in-out delay-150 hover:w-24 duration-300">
+                            @if (item.CarImagesEntities.Any())
+                            {
+                                foreach (var image in item.CarImagesEntities)
+                                {
+                                    <img class="" src="@image.CarImageUrl" alt="car image"/>
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                <img src="https://img.freepik.com/free-photo/empty-parking-lot-parking-lane-outdoor-public-park_1127-3374.jpg" alt="car image"/>
+                            }
+                        </td>
+                        <td class="">
+                            <div class="w-full font-semibold">@item.AdvertisementName</div>
+                            <br/>
+                            <div class="w-full flex items-center mx-3">
+                                <div class="text-sm"> @item.MainClassificationEntityCarBrand </div>
+                                <span class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16" height="16">
+                                        <path d="M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z" fill="#4B5563"/>
+                                    </svg>
+                                </span>
+                                <div class="text-sm"> @item.MainClassificationEntityCarModel </div>
+                                <span class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16" height="16">
+                                        <path d="M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z" fill="#4B5563"/>
+                                    </svg>
+                                </span>
+                                <div class="text-sm"> @item.MainClassificationEntityCarPackage</div>
+                            </div>
+                        </td>
+                        <td class="">@item.Price.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".")</td>
+                        <td class="">@item.EngineHorsePower</td>
+                        <td class="">@item.EngineTorque</td>
+                        <td class="">@item.TransmissionType</td>
+                        <td class="">@item.MainClassificationEntityCarYear</td>
+                        <td class="">
+                            <button class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                                    <path d="M12 16.026L7.675 18.637 8.823 13.717 5 10.405 10.029 9.978 12 5.327 13.971 9.978 19 10.405 15.177 13.717 16.325 18.637z" opacity=".3" fill="#FFA200" />
+                                    <path d="M23.053,9.002l-7.947-0.674L12,1L8.894,8.328L0.947,9.002l6.035,5.228L5.169,22L12,17.877L18.831,22l-1.813-7.77L23.053,9.002z M12,15.541l-3.806,2.297l1.01-4.33L5.84,10.594l4.425-0.375L12,6.125l1.735,4.094l4.425,0.375l-3.364,2.915l1.01,4.33L12,15.541z" fill="#FEC50E" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="m-auto flex justify-center align-middle flex-row">
+            <div class="relative flex flex-col text-center mx-5 border-4 border-black border-separate rounded-xl">
+                <table class="blur-[3px]">
+                    <caption></caption>
+                    <thead>
+                    <tr class="bg-blue-200">
+                        <th class="rounded-tl-xl mx-auto py-2 px-24 whitespace-nowrap"></th>
+                        <th class="mx-auto py-2 px-10 whitespace-nowrap">Ad Title</th>
+                        <th class="mx-auto py-2 px-8 whitespace-nowrap">Price</th>
+                        <th class="mx-auto py-2 px-8 whitespace-nowrap">Horse Power</th>
+                        <th class="mx-auto py-2 px-8 whitespace-nowrap">Torque</th>
+                        <th class="mx-auto py-2 px-8 whitespace-nowrap">Transmission</th>
+                        <th class="mx-auto py-2 px-8 whitespace-nowrap">Year</th>
+                        <th class="rounded-tr-xl mx-auto py-2 px-8 whitespace-normal">Favorite</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="h-4 w-auto even:bg-blue-100 odd:bg-white">
+                        <td class="w-12">
+                            <img src="https://www.jonathanmotorcars.com/imagetag/1173/3/l/Used-2020-Ford-F-450-Super-Duty-Platinum-1604618245.jpg" alt="car image"/>
+                        </td>
+                        <td class="">
+                            <div class="w-full font-semibold">Etiam non quam lacus suspendisse</div>
+                            <br/>
+                            <div class="w-full flex items-center mx-3">
+                                <div class="text-sm"> Ford </div>
+                                <span class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16" height="16">
+                                        <path d="M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z" fill="#4B5563"/>
+                                    </svg>
+                                </span>
+                                <div class="text-sm"> F-450 </div>
+                                <span class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16" height="16">
+                                        <path d="M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z" fill="#4B5563"/>
+                                    </svg>
+                                </span>
+                                <div class="text-sm"> Super Duty IV</div>
+                            </div>
+                        </td>
+                        <td class="">2.730.000</td>
+                        <td class="">475</td>
+                        <td class="">1424</td>
+                        <td class="">Automatic</td>
+                        <td class="">2022</td>
+                        <td class="">
+                            <div class="flex mx-auto justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                                    <path d="M12 16.026L7.675 18.637 8.823 13.717 5 10.405 10.029 9.978 12 5.327 13.971 9.978 19 10.405 15.177 13.717 16.325 18.637z" opacity=".3" fill="#FFA200" />
+                                    <path d="M23.053,9.002l-7.947-0.674L12,1L8.894,8.328L0.947,9.002l6.035,5.228L5.169,22L12,17.877L18.831,22l-1.813-7.77L23.053,9.002z M12,15.541l-3.806,2.297l1.01-4.33L5.84,10.594l4.425-0.375L12,6.125l1.735,4.094l4.425,0.375l-3.364,2.915l1.01,4.33L12,15.541z" fill="#FEC50E" />
+                                </svg>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="h-4 w-auto even:bg-blue-100 odd:bg-white">
+                        <td class="w-12">
+                            <img src="https://performancedrive.com.au/wp-content/uploads/2019/07/2020-Mercedes-Benz-CLA-200-1280x813.jpg" alt="car image"/>
+                        </td>
+                        <td class="">
+                            <div class="w-full font-semibold">Placerat duis ultricies lacus sed turpis tincidunt</div>
+                            <br/>
+                            <div class="w-full flex items-center mx-3">
+                                <div class="text-sm"> Mercedes </div>
+                                <span class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16" height="16">
+                                        <path d="M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z" fill="#4B5563"/>
+                                    </svg>
+                                </span>
+                                <div class="text-sm"> CLA </div>
+                                <span class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16" height="16">
+                                        <path d="M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z" fill="#4B5563"/>
+                                    </svg>
+                                </span>
+                                <div class="text-sm"> 200d DCT</div>
+                            </div>
+                        </td>
+                        <td class="">3.200.000</td>
+                        <td class="">150</td>
+                        <td class="">320</td>
+                        <td class="">Automatic</td>
+                        <td class="">2023</td>
+                        <td class="">
+                            <div class="flex mx-auto justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                                    <path d="M12 16.026L7.675 18.637 8.823 13.717 5 10.405 10.029 9.978 12 5.327 13.971 9.978 19 10.405 15.177 13.717 16.325 18.637z" opacity=".3" fill="#FFA200" />
+                                    <path d="M23.053,9.002l-7.947-0.674L12,1L8.894,8.328L0.947,9.002l6.035,5.228L5.169,22L12,17.877L18.831,22l-1.813-7.77L23.053,9.002z M12,15.541l-3.806,2.297l1.01-4.33L5.84,10.594l4.425-0.375L12,6.125l1.735,4.094l4.425,0.375l-3.364,2.915l1.01,4.33L12,15.541z" fill="#FEC50E" />
+                                </svg>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="h-4 w-auto even:bg-blue-100 odd:bg-white">
+                        <td class="w-12">
+                            <img src="https://img.haoche.cn/cms/ueditorUp/2019/04/11/6369057676222736949944922.jpg" alt="car image"/>
+                        </td>
+                        <td class="">
+                            <div class="w-full font-semibold">Non tellus orci ac auctor augue</div>
+                            <br/>
+                            <div class="w-full flex items-center mx-3">
+                                <div class="text-sm"> Audi </div>
+                                <span class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16" height="16">
+                                        <path d="M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z" fill="#4B5563"/>
+                                    </svg>
+                                </span>
+                                <div class="text-sm"> A3 </div>
+                                <span class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16" height="16">
+                                        <path d="M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z" fill="#4B5563"/>
+                                    </svg>
+                                </span>
+                                <div class="text-sm"> Sedan 1.6TDI Sport Line</div>
+                            </div>
+                        </td>
+                        <td class="">1.225.000</td>
+                        <td class="">110</td>
+                        <td class="">250</td>
+                        <td class="">Automatic</td>
+                        <td class="">2016</td>
+                        <td class="">
+                            <div class="flex mx-auto justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                                    <path d="M12 16.026L7.675 18.637 8.823 13.717 5 10.405 10.029 9.978 12 5.327 13.971 9.978 19 10.405 15.177 13.717 16.325 18.637z" opacity=".3" fill="#FFA200" />
+                                    <path d="M23.053,9.002l-7.947-0.674L12,1L8.894,8.328L0.947,9.002l6.035,5.228L5.169,22L12,17.877L18.831,22l-1.813-7.77L23.053,9.002z M12,15.541l-3.806,2.297l1.01-4.33L5.84,10.594l4.425-0.375L12,6.125l1.735,4.094l4.425,0.375l-3.364,2.915l1.01,4.33L12,15.541z" fill="#FEC50E" />
+                                </svg>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="h-4 w-auto even:bg-blue-100 odd:bg-white">
+                        <td class="w-12">
+                            <img src="https://th.bing.com/th/id/OIP.2cC61428PfhxW_CX1uw8pAHaEK?rs=1&pid=ImgDetMain" alt="car image"/>
+                        </td>
+                        <td class="">
+                            <div class="w-full font-semibold">Euismod lacinia at quis risus sed</div>
+                            <br/>
+                            <div class="w-full flex items-center mx-3">
+                                <div class="text-sm"> Porsche </div>
+                                <span class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16" height="16">
+                                        <path d="M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z" fill="#4B5563"/>
+                                    </svg>
+                                </span>
+                                <div class="text-sm"> 911 </div>
+                                <span class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16" height="16">
+                                        <path d="M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z" fill="#4B5563"/>
+                                    </svg>
+                                </span>
+                                <div class="text-sm"> Carrera 4 GTS</div>
+                            </div>
+                        </td>
+                        <td class="">22.750.000</td>
+                        <td class="">450</td>
+                        <td class="">550</td>
+                        <td class="">Automatic</td>
+                        <td class="">2023</td>
+                        <td class="">
+                            <div class="flex mx-auto justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                                    <path d="M12 16.026L7.675 18.637 8.823 13.717 5 10.405 10.029 9.978 12 5.327 13.971 9.978 19 10.405 15.177 13.717 16.325 18.637z" opacity=".3" fill="#FFA200" />
+                                    <path d="M23.053,9.002l-7.947-0.674L12,1L8.894,8.328L0.947,9.002l6.035,5.228L5.169,22L12,17.877L18.831,22l-1.813-7.77L23.053,9.002z M12,15.541l-3.806,2.297l1.01-4.33L5.84,10.594l4.425-0.375L12,6.125l1.735,4.094l4.425,0.375l-3.364,2.915l1.01,4.33L12,15.541z" fill="#FEC50E" />
+                                </svg>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="h-4 w-auto even:bg-blue-100 odd:bg-white">
+                        <td class="rounded-bl-xl w-12">
+                            <img class="rounded-bl-xl" src="https://th.bing.com/th/id/OIP.dKdx62Kk2s0WE1RkjJ9RnAAAAA?rs=1&pid=ImgDetMain" alt="car image"/>
+                        </td>
+                        <td class="">
+                            <div class="w-full font-semibold">Sollicitudin nibh sit!</div>
+                            <br/>
+                            <div class="w-full flex items-center mx-3">
+                                <div class="text-sm"> Honda </div>
+                                <span class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16" height="16">
+                                        <path d="M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z" fill="#4B5563"/>
+                                    </svg>
+                                </span>
+                                <div class="text-sm"> Civic </div>
+                                <span class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16" height="16">
+                                        <path d="M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z" fill="#4B5563"/>
+                                    </svg>
+                                </span>
+                                <div class="text-sm"> 1.4 IS</div>
+                            </div>
+                        </td>
+                        <td class="">318.500</td>
+                        <td class="">90</td>
+                        <td class="">120</td>
+                        <td class="">Manuel</td>
+                        <td class="">1997</td>
+                        <td class="rounded-br-xl">
+                            <div class="flex mx-auto justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                                    <path d="M12 16.026L7.675 18.637 8.823 13.717 5 10.405 10.029 9.978 12 5.327 13.971 9.978 19 10.405 15.177 13.717 16.325 18.637z" opacity=".3" fill="#FFA200" />
+                                    <path d="M23.053,9.002l-7.947-0.674L12,1L8.894,8.328L0.947,9.002l6.035,5.228L5.169,22L12,17.877L18.831,22l-1.813-7.77L23.053,9.002z M12,15.541l-3.806,2.297l1.01-4.33L5.84,10.594l4.425-0.375L12,6.125l1.735,4.094l4.425,0.375l-3.364,2.915l1.01,4.33L12,15.541z" fill="#FEC50E" />
+                                </svg>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  bg-red-300 px-5 py-3 rounded-xl font-bold text-xl text-black">You have not added any ads to your favorites.</div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    let svg1 = document.querySelector(".svg1");
+    let svg2 = document.querySelector(".svg2");
+    let container = document.getElementById("container");
+    
+    container.addEventListener("click", function() {
+        if (svg1.style.display === "none") {
+            svg1.style.display = "block";
+            svg2.style.display = "none";
+            svg1.style.opacity = "1";
+            svg2.style.opacity = "0";
+        } else {
+            svg1.style.display = "none";
+            svg2.style.display = "block";
+            svg1.style.opacity = "0";
+            svg2.style.opacity = "1";
+        }
+    });
+</script>
+
+<script>
+var array = @json;
+
+
+function rowClick(id, e) {
+    if (e.target.parentNode.tagName === "svg") {
+        e.target.parentNode.style.filter = "brightness(10%)";
+        
+        document.querySelector("a#CarDeleteHref_"+id).click();
+        
+        return;    
+    }
+    
+    document.querySelector("a#CarDetailsHref_"+id).click();
+}
+</script>
+
+
+<script>
+function sortTable(columnIndex) {
+    const table = document.getElementById('myTable');
+    const rows = Array.from(table.querySelectorAll('tbody tr'));
+    
+    // Sıralama işlevini tanımlayın
+    const sortFunction = (a, b) => {
+        let aValue = a.cells[columnIndex].textContent;
+        let bValue = b.cells[columnIndex].textContent;
+
+        //Fiyat kısmındaki "." ları çıkarıp ayrıca karşılaştırmasını yaptım.
+        if (columnIndex === 3) {
+            aValue = aValue.split('.').join("");
+            bValue = bValue.split('.').join("");
+            
+            if (Number(aValue) < Number(bValue)) {
+                return -1;
+            } else if (Number(aValue) > Number(bValue)) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        
+        // Sıralama yöntemine göre karşılaştırma yapın
+        if (aValue < bValue) {
+            return -1;
+        } else if (aValue > bValue) {
+            return 1;
+        } else {
+            return 0;
+        }
+    };
+
+    // Sıralama işlevini kullanarak satırları yeniden düzenleyin
+    rows.sort(sortFunction);
+
+    // Sıralama yönüne göre tersine çevirin (desc)
+    if (table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.contains('desc')) {
+        rows.reverse();
+        table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.remove('desc');
+    } else {
+        table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.add('desc');
+    }
+
+    table.querySelector('tbody').append(...rows); 
+}
+</script>

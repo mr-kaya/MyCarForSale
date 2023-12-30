@@ -40,9 +40,13 @@ public class UserAccountEntityDtoValidator : AbstractValidator<UserAccountEntity
             .WithMessage("Maximum 254 characters");
 
         RuleFor(x => x.ZipCode).NotNull().WithMessage("Enter your {PropertyName}").NotEmpty()
-            .WithMessage("Enter your {PropertyName}").Must(x => int.TryParse(x.ToString(), out _))
-            .WithMessage("Please enter only numbers").Must(x => x.ToString().Length < 12)
+            .WithMessage("Enter your {PropertyName}").Must(BeValidNumericZipCode)
+            .WithMessage("Please enter only numbers").Length(1, 11)
             .WithMessage("Enter a real zip code.");
     }
-    
+
+    private bool BeValidNumericZipCode(string arg)
+    {
+        return int.TryParse(arg, out _);
+    }
 }

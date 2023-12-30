@@ -47,20 +47,14 @@
     <div class="flex-col text-center mx-5">
         <table id="myTable">
             <thead>
-                <tr class="sticky top-0 backdrop-blur-sm mix-blend-multiply bg-blue-400">
-                    <th class=" mx-auto py-4 px-24 whitespace-nowrap"></th>
-                    <th class="mx-auto py-4 px-10 whitespace-nowrap">Ad Title</th>
-                    @*<th class="mx-auto py-4 px-8 whitespace-nowrap">Description</th>*@
-                    <th onclick="sortTable(3)" class="mx-auto py-4 px-8 whitespace-nowrap hover:cursor-pointer">Price</th>
-                    @*<th class="mx-auto py-4 px-8 whitespace-nowrap">Drivetrain</th>*@
-                    @*<th class="mx-auto py-4 px-8 whitespace-nowrap">Horse Power</th>*@
-                    @*<th class="mx-auto py-4 px-8 whitespace-nowrap">Torque</th>*@
-                    <th onclick="sortTable(4)" class="mx-auto py-4 px-8 whitespace-nowrap hover:cursor-pointer">Displacement</th>
-                    <th onclick="sortTable(5)" class="mx-auto py-4 px-8 whitespace-nowrap hover:cursor-pointer">Transmission</th>
-                    <th onclick="sortTable(6)" class="mx-auto py-4 px-8 whitespace-nowrap hover:cursor-pointer">Car Brand</th>
-                    <th onclick="sortTable(7)" class="mx-auto py-4 px-8 whitespace-nowrap hover:cursor-pointer">Car Model</th>
-                    <th onclick="sortTable(8)" class="mx-auto py-4 px-8 whitespace-nowrap hover:cursor-pointer">Car Package</th>
-                    <th onclick="sortTable(9)" class="mx-auto py-4 px-8 whitespace-nowrap hover:cursor-pointer">Car Year</th>
+                <tr class="sticky top-0 backdrop-blur-sm mix-blend-multiply bg-blue-200">
+                    <th class=" mx-auto py-2 px-24 whitespace-nowrap"></th>
+                    <th class="mx-auto py-2 px-10 whitespace-nowrap">Ad Title</th>
+                    <th onclick="sortTable(3)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Price</th>
+                    <th onclick="sortTable(4)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Horse Power</th>
+                    <th onclick="sortTable(5)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Torque</th>
+                    <th onclick="sortTable(6)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Transmission</th>
+                    <th onclick="sortTable(7)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Year</th>
                 </tr>
             </thead>
             <tbody>
@@ -69,7 +63,7 @@
                 <tr id="row-@item.Id" onclick="rowClick('@item.Id')" class="max-h-4 w-auto even:bg-blue-100 odd:bg-white hover:bg-blue-50 hover:cursor-pointer">
                     <td class="hidden"><a id="CarDetailsHref_@item.Id" class=" decoration-0" asp-area="" asp-controller="Home" asp-action="CarId" asp-route-id="@item.Id">Giriş</a></td>
                     <td class="">
-                        @if (item.CarImagesEntities.Count != 0)
+                        @if (item.CarImagesEntities.Any())
                         {
                             @foreach (var image in item.CarImagesEntities)
                             {
@@ -82,18 +76,30 @@
                             <img src="https://img.freepik.com/free-photo/empty-parking-lot-parking-lane-outdoor-public-park_1127-3374.jpg" alt="car image"/>
                         }
                     </td>
-                    <td class="">@item.AdvertisementName</td>
-                    @*<td class="">@item.AdvertisementDescription</td>*@
-                    <td class="">@item.Price.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".")</td>
-                    @*<td class="">@item.CarDrivetrain</td>*@
-                    @*<td class="">@item.EngineHorsePower</td>*@
-                    @*<td class="">@item.EngineTorque</td>*@
-                    <td class="">@item.EngineDisplacement</td>
-                    <td class="">@item.TransmissionType</td>
-                    <td class="">@item.MainClassificationEntityCarBrand</td>
-                    <td class="">@item.MainClassificationEntityCarModel</td>
-                    <td class="">@item.MainClassificationEntityCarPackage</td>
-                    <td class="">@item.MainClassificationEntityCarYear</td>
+                    <td class="">
+                        <div class="w-full font-semibold">@item.AdvertisementName</div>
+                        <br/>
+                        <div class="w-full flex items-center mx-3">
+                            <div class="text-sm"> @item.MainClassificationEntityCarBrand </div>
+                            <span class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16" height="16">
+                                    <path d="M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z" fill="#4B5563" />
+                                </svg>
+                            </span>
+                            <div class="text-sm"> @item.MainClassificationEntityCarModel </div>
+                            <span class="">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16" height="16">
+                                    <path d="M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z" fill="#4B5563" />
+                                </svg>
+                            </span>
+                            <div class="text-sm"> @item.MainClassificationEntityCarPackage</div>
+                        </div>
+                        </td>
+                        <td class="">@item.Price.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".")</td>
+                        <td class="">@item.EngineHorsePower</td>
+                        <td class="">@item.EngineTorque</td>
+                        <td class="">@item.TransmissionType</td>
+                        <td class="">@item.MainClassificationEntityCarYear</td>
                 </tr>
             }
             </tbody>

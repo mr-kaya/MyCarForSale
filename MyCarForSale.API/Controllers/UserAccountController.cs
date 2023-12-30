@@ -1,7 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyCarForSale.Core.DTOs;
@@ -14,16 +15,43 @@ namespace MyCarForSale.API.Controllers;
 [Authorize]
 public class UserAccountController : CustomBaseController
 {
+    private readonly IConfiguration _configuration;
+    
     private static JwtSettings _getToken;
     private readonly IMapper _mapper;
     private readonly IGenericService<UserAccountEntity> _service;
     private readonly IAuthService _authService;
 
-    public UserAccountController(IMapper mapper, IGenericService<UserAccountEntity> service, IAuthService authService)
+    private static string EncryptString(string password, byte[] key, byte[] iv)
+    {
+        using (Aes aesAlg = Aes.Create())
+        {
+            aesAlg.Key = key;
+            aesAlg.IV = iv;
+
+            ICryptoTransform cryptoTransform = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
+                {
+                    using (StreamWriter streamWriter = new StreamWriter(cryptoStream))
+                    {
+                        streamWriter.Write(password);
+                    }
+                }
+
+                return Convert.ToBase64String(memoryStream.ToArray());
+            }
+        }
+    }
+    
+    public UserAccountController(IMapper mapper, IGenericService<UserAccountEntity> service, IAuthService authService, IConfiguration configuration)
     {
         _mapper = mapper;
         _service = service;
         _authService = authService;
+        _configuration = configuration;
     }
     
     [HttpGet]
@@ -58,8 +86,6 @@ public class UserAccountController : CustomBaseController
     [AllowAnonymous]
     public async Task<IActionResult> FindEmail(string userEmail)
     {
-        var emailEntity = await _service.SingleAsyncTask(entity => entity.Email == userEmail);
-
         if (await _service.AnyAsyncTask(entity => entity.Email == userEmail))
         {
             return CreateActionResult(CustomNoContentResponseDto.Fail(409, "Bu e-posta zaten kayıtlı."));
@@ -72,7 +98,10 @@ public class UserAccountController : CustomBaseController
     [AllowAnonymous]
     public async Task<IActionResult> LoginUser(string userEmail, string userPassword)
     {
-        //var emailAndPasswordBool = await _service.AnyAsyncTask(entity => entity.Email == userEmail && entity.Password == userPassword); //Email & Password var mı diye kontrol eder.
+        byte[] key = Encoding.UTF8.GetBytes(_configuration["Cryptography:Key"]);
+        byte[] iv = Encoding.UTF8.GetBytes(_configuration["Cryptography:IV"]);
+
+        userPassword = EncryptString(userPassword, key, iv); //Password şifreleme
         
         var emailAndPasswordEntity =
             await _service.SingleAsyncTask(entity => entity.Email == userEmail && entity.Password == userPassword);
@@ -85,6 +114,11 @@ public class UserAccountController : CustomBaseController
     [AllowAnonymous]
     public async Task<IActionResult> Save(UserAccountEntityDto userAccountEntityDto)
     {
+        byte[] key = Encoding.UTF8.GetBytes(_configuration["Cryptography:Key"]);
+        byte[] iv = Encoding.UTF8.GetBytes(_configuration["Cryptography:IV"]);
+
+        userAccountEntityDto.Password = EncryptString(userAccountEntityDto.Password, key, iv); //Password şifreleme
+        
         var addUserAccount = _mapper.Map<UserAccountEntity>(userAccountEntityDto);
         await _service.AddAsyncTask(addUserAccount);
         var userAccountDto = _mapper.Map<UserAccountEntityDto>(addUserAccount);
@@ -94,6 +128,11 @@ public class UserAccountController : CustomBaseController
     [HttpPut]
     public async Task<IActionResult> Update(UserAccountEntityDto userAccountEntityDto)
     {
+        byte[] key = Encoding.UTF8.GetBytes(_configuration["Cryptography:Key"]);
+        byte[] iv = Encoding.UTF8.GetBytes(_configuration["Cryptography:IV"]);
+
+        userAccountEntityDto.Password = EncryptString(userAccountEntityDto.Password, key, iv);
+        
         var updateUserAccount = _mapper.Map<UserAccountEntity>(userAccountEntityDto);
         await _service.UpdateAsyncTask(updateUserAccount);
         return CreateActionResult(CustomNoContentResponseDto.Success(204));

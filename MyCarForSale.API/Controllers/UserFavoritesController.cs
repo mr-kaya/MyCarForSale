@@ -71,4 +71,20 @@ public class UserFavoritesController : CustomBaseController
         await _service.DeleteAsyncTask(deleteFavorite);
         return CreateActionResult(CustomNoContentResponseDto.Success(204));
     }
+
+    [HttpDelete("[action]")]
+    public async Task<IActionResult> DeleteFavorite(int carId, int userId)
+    {
+        var boolFavoriteEntity = await _service.AnyAsyncTask(entity => entity.FavoriteUserId == userId && entity.FavoriteBaseId == carId);
+        
+        var findFavoriteEntity =
+            await _service.SingleAsyncTask(entity => entity.FavoriteUserId == userId && entity.FavoriteBaseId == carId);
+        
+        if (findFavoriteEntity != null)
+        {
+            await _service.DeleteAsyncTask(findFavoriteEntity);
+        }
+
+        return CreateActionResult(CustomNoContentResponseDto.Success(204));
+    }
 }
