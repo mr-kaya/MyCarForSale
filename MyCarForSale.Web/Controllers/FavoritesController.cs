@@ -62,6 +62,25 @@ public class FavoritesController : Controller
 
             if (idClaims != null)
             {
+                var myFavoritesNumbers = await _favoritesService.GetUserAllFavoriteNumbersAsync(idClaims);
+                if (myFavoritesNumbers != null)
+                {
+                    foreach (var item in myFavoritesNumbers)
+                    {
+                        if (item.FavoriteBaseId.ToString() == carId)
+                        {
+                            await _favoritesService.DeleteGetCarId(carId, idClaims);
+                        }
+                    }
+                    
+                    /*
+                    foreach (var item in myFavoritesNumbers.Select(dto => dto.FavoriteBaseId.ToString()).Where(s => s == carId))
+                    {
+                        await _favoritesService.DeleteGetCarId(carId, item);
+                    } 
+                    */  
+                }
+
                 UserFavoritesEntityDto userFavoritesEntityDto = new()
                 {
                     FavoriteUserId = int.Parse(idClaims),

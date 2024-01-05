@@ -12,6 +12,16 @@ public class FavoritesService
         _httpClient = httpClient;
     }
 
+    public async Task<List<UserFavoritesEntityDto>> GetUserAllFavoriteNumbersAsync(string id)
+    {
+        var encodeId = Uri.EscapeDataString(id.ToString());
+        _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + UserController.TokenKey);
+        var apiUrl = $"UserFavorites/GetIdWhereFavorites/{encodeId}";
+        var response = await _httpClient.GetFromJsonAsync<CustomResponseDto<List<UserFavoritesEntityDto>>>(apiUrl);
+
+        return response?.Data;
+    }
+    
     public async Task<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>?> GetUserAllFavoritesAsync(int id)
     {
         var carFeaturesEntityDtos =

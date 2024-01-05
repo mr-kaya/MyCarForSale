@@ -1,122 +1,209 @@
 ﻿@using MyCarForSale.Web.Controllers
+@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model MyCarForSale.Core.DTOs.CarFeaturesWithImageAndClassificationAndUserAccountDto
 
 @{
     ViewBag.Title = "title";
     Layout = "_Layout";
 
-    List<string> images = new List<string>();
+
+    var images = new List<string>();
     foreach (var imageItem in Model.CarImagesEntities)
     {
         images.Add(imageItem.CarImageUrl);
     }
 }
-
 <div class="container mx-auto flex flex-row justify-around">
-    <div class="hidden md:flex flex-col relative">
-        <div class="max-h-[80vh] min-h-[80vh] rounded-lg bg-blue-500 sticky top-5 flex flex-col flex-nowrap justify-between">
-            @*
-            Side Panel
-            *@
-            <div class="flex flex-col flex-nowrap justify-between rounded-lg bg-blue-600 text-center align-middle text-white text-lg font-semibold">
-                <br/>
-                <label class="px-24">@Model.MainClassificationEntityCarBrand</label>
-                <label class="px-24">@Model.MainClassificationEntityCarPackage</label>
-                <label class="px-24">@Model.MainClassificationEntityCarYear</label>
-                <br/>
-                <label class="px-24">@Model.MainClassificationEntityMainClassification</label>
-                <br/>
-                @if (UserController.TokenKey != null)
-                {
-                    <form method="post">
-                        <input type="hidden" name="carId" value="@Model.Id"/>
-                        <button type="submit" asp-controller="Favorites" asp-action="AddFavorites" class="flex px-24 mx-5 my-3">Add Favorites</button>
-                    </form>
-                }
+    <div class="hidden md:flex md:flex-col relative max-w-72 min-w-72">
+        <div class="flex flex-row justify-start">
+            <div class="m-2.5 flex h-12 w-12 justify-start rounded-full bg-gray-200 align-middle text-xl font-bold text-gray-700">
+                <label class="m-auto">@Model.UserAccountEntityName.First()@Model.UserAccountEntitySurname.First()</label>
             </div>
+            <label class="my-auto flex align-middle text-lg font-semibold text-gray-700">@Model.UserAccountEntityName</label>
         </div>
-        <div class="my-[10vh]"></div>
-        <div class="min-h-[5vh] sticky top-[85vh]">
-            <a href="#" class="flex justify-center">
-                <svg class="h-10 mr-3" width="51" height="70" viewBox="0 0 51 70" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)"><path d="M1 53H27.9022C40.6587 53 51 42.7025 51 30H24.0978C11.3412 30 1 40.2975 1 53Z" fill="#76A9FA"></path><path d="M-0.876544 32.1644L-0.876544 66.411C11.9849 66.411 22.4111 55.9847 22.4111 43.1233L22.4111 8.87674C10.1196 8.98051 0.518714 19.5571 -0.876544 32.1644Z" fill="#A4CAFE"></path><path d="M50 5H23.0978C10.3413 5 0 15.2975 0 28H26.9022C39.6588 28 50 17.7025 50 5Z" fill="#1C64F2"></path></g><defs><clipPath id="clip0"><rect width="51" height="70" fill="white"></rect></clipPath></defs></svg>
-                <span class="self-center text-lg font-semibold whitespace-nowrap">MyCarForSale</span>
-            </a>
+
+        <div class="grid grid-cols-2 gap-4 h-auto rounded-lg bg-gray-200 p-5 mb-5">
+            <div class="font-semibold">Phone:</div>
+            <div>@Model.UserAccountEntityPhoneNumber</div>
+            <div class="font-semibold">Country:</div>
+            <div>@Model.UserAccountEntityCountry</div>
+            <div class="font-semibold">Province:</div>
+            <div>@Model.UserAccountEntityProvince</div>
+            <div class="font-semibold">District:</div>
+            <div>@Model.UserAccountEntityDistrict</div>
+            <div class="font-semibold">Zip Code:</div>
+            <div>@Model.UserAccountEntityZipCode</div>
         </div>
-    </div>
-    <div class="mx-5">
-        <div onwheel="resimYerDegistir(event)" class="block max-h-96">
-            <div class="flex mx-auto justify-center relative  w-4/5 z-20">
-                <img id="resim1" class="rounded-lg shadow-2xl shadow-black" src="@images[1]" alt="Image could not be loaded."/>
-            </div>
-            <div id="resim2" class="flex mx-auto justify-center relative w-3/4 -top-96 z-10">
-                <img class="rounded-lg shadow-2xl shadow-black brightness-75" src="@images[0]" alt="Image could not be loaded."/>
-            </div>
+        <div class="mb-5">
+            @if (UserController.TokenKey != null)
+            {
+                <form method="post">
+                    <input type="hidden" name="carId" value="@Model.Id"/>
+                    <button type="submit" asp-controller="Favorites" asp-action="AddFavorites" class="h-[4.5rem] grid grid-cols-3 gap-4 rounded-lg bg-blue-500 text-white font-semibold w-full">
+                        <div class="h-full flex justify-end items-center">
+                            <div class="bg-gray-100 rounded-full p-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                                    <path d="M12 16.026L7.675 18.637 8.823 13.717 5 10.405 10.029 9.978 12 5.327 13.971 9.978 19 10.405 15.177 13.717 16.325 18.637z" opacity=".8" fill="#FFA200"></path>
+                                    <path d="M23.053,9.002l-7.947-0.674L12,1L8.894,8.328L0.947,9.002l6.035,5.228L5.169,22L12,17.877L18.831,22l-1.813-7.77L23.053,9.002z M12,15.541l-3.806,2.297l1.01-4.33L5.84,10.594l4.425-0.375L12,6.125l1.735,4.094l4.425,0.375l-3.364,2.915l1.01,4.33L12,15.541z" fill="#FEC50E"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="h-full col-span-2 flex justify-start items-center">Add Favorites</div>
+                    </button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="User" asp-action="LoginAccountPage" class="h-[4.5rem] grid grid-cols-3 gap-4 rounded-lg bg-blue-500 text-white font-semibold w-full">
+                    <div class="h-full flex justify-end items-center">
+                        <div class="bg-gray-100 rounded-full p-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                                <path d="M12 16.026L7.675 18.637 8.823 13.717 5 10.405 10.029 9.978 12 5.327 13.971 9.978 19 10.405 15.177 13.717 16.325 18.637z" opacity=".8" fill="#FFA200"></path>
+                                <path d="M23.053,9.002l-7.947-0.674L12,1L8.894,8.328L0.947,9.002l6.035,5.228L5.169,22L12,17.877L18.831,22l-1.813-7.77L23.053,9.002z M12,15.541l-3.806,2.297l1.01-4.33L5.84,10.594l4.425-0.375L12,6.125l1.735,4.094l4.425,0.375l-3.364,2.915l1.01,4.33L12,15.541z" fill="#FEC50E"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="h-full col-span-2 flex justify-start items-center">Add Favorites</div>
+                </a>
+            }
         </div>
-    </div>
-    <div class="hidden md:flex flex-col relative">
-            <div class="max-h-[80vh] min-h-[80vh] rounded-lg bg-blue-500 sticky top-5 flex flex-col flex-nowrap justify-between">
-                @*
-                Side Panel
-                *@
-                <div class="flex flex-col flex-nowrap justify-between rounded-lg bg-blue-600 text-center align-middle text-white text-lg font-semibold">
-                    <br/>
-                    <label class="px-24">@Model.MainClassificationEntityCarBrand</label>
-                    <label class="px-24">@Model.MainClassificationEntityCarPackage</label>
-                    <label class="px-24">@Model.MainClassificationEntityCarYear</label>
-                    <br/>
-                    <label class="px-24">@Model.MainClassificationEntityMainClassification</label>
-                    <br/>
+        <div class="rounded-lg p-2 bg-white  shadow-[0px_0px_5px_5px] shadow-gray-500/20 mb-5">
+            <button id="baseButton" onclick="baseButtonClick()" class="h-14 rounded-lg flex items-center justify-between border-none w-full p-4 text-black cursor-pointer text-lg font-semibold">
+                <span>Base</span>
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="32" height="32">
+                        <path d="M57.236 18.127L32 40.41 6.764 18.127 4.036 21.051 29.953 46.604 32 48.622 34.047 46.604 59.964 21.051z" fill="#000000"/>
+                    </svg>
+                </span>
+            </button>
+            <div id="baseButtonDiv" style="display: none;" class="origin-top-right right-0 mt-2 rounded-lg">
+                <div class="grid grid-cols-2 gap-4 text-black text-sm">
+                    <div class="font-semibold text-end">Category:</div>
+                    <div>@Model.MainClassificationEntityMainClassification</div>
+                    <div class="font-semibold text-end">Brand:</div>
+                    <div>@Model.MainClassificationEntityCarBrand</div>
+                    <div class="font-semibold text-end">Model:</div>
+                    <div>@Model.MainClassificationEntityCarModel</div>
+                    <div class="font-semibold text-end">Package:</div>
+                    <div>@Model.MainClassificationEntityCarPackage</div>
+                    <div class="font-semibold text-end">Year:</div>
+                    <div>@Model.MainClassificationEntityCarYear</div>
+                    <div class="font-semibold text-end">Km:</div>
+                    <div>@Model.CarTotalKm</div>
                 </div>
             </div>
-            <div class="my-[10vh]"></div>
-            <div class="min-h-[5vh] sticky top-[85vh]">
-                <a href="#" class="flex justify-center">
-                    <svg class="h-10 mr-3" width="51" height="70" viewBox="0 0 51 70" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0)"><path d="M1 53H27.9022C40.6587 53 51 42.7025 51 30H24.0978C11.3412 30 1 40.2975 1 53Z" fill="#76A9FA"></path><path d="M-0.876544 32.1644L-0.876544 66.411C11.9849 66.411 22.4111 55.9847 22.4111 43.1233L22.4111 8.87674C10.1196 8.98051 0.518714 19.5571 -0.876544 32.1644Z" fill="#A4CAFE"></path><path d="M50 5H23.0978C10.3413 5 0 15.2975 0 28H26.9022C39.6588 28 50 17.7025 50 5Z" fill="#1C64F2"></path></g><defs><clipPath id="clip0"><rect width="51" height="70" fill="white"></rect></clipPath></defs></svg>
-                    <span class="self-center text-lg font-semibold whitespace-nowrap">MyCarForSale</span>
-                </a>
+        </div>
+
+        <div class="rounded-lg p-2 bg-white  shadow-[0px_0px_5px_5px] shadow-gray-500/20 mb-5">
+            <button id="detailsButton" onclick="detailsButtonClick()" class="h-14 rounded-lg flex items-center justify-between border-none w-full p-4 text-black cursor-pointer text-lg font-semibold">
+                <span>Details</span>
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="32" height="32">
+                        <path d="M57.236 18.127L32 40.41 6.764 18.127 4.036 21.051 29.953 46.604 32 48.622 34.047 46.604 59.964 21.051z" fill="#000000"/>
+                    </svg>
+                </span>
+            </button>
+            <div id="detailsButtonDiv" style="display: none;" class="origin-top-right right-0 mt-2 rounded-lg">
+                <div class="grid grid-cols-2 gap-4 text-black text-sm">
+                    <div class="font-semibold text-end">Capacity:</div>
+                    <div>@Model.EngineDisplacement</div>
+                    <div class="font-semibold text-end">Power:</div>
+                    <div>@Model.EngineHorsePower</div>
+                    <div class="font-semibold text-end">Torque:</div>
+                    <div>@Model.EngineTorque</div>
+                    <div class="font-semibold text-end">Drivetrain:</div>
+                    <div>@Model.CarDrivetrain</div>
+                    <div class="font-semibold text-end">Transmission:</div>
+                    <div>@Model.TransmissionType</div>
+                </div>
             </div>
         </div>
+    </div>
+    <div class="block">
+        <main class="flex flex-col gap-5 snap-y snap-mandatory snap-always overflow-y-scroll max-h-[44rem]">
+            @if (images.Any())
+            {
+                foreach (var image in images)
+                {
+                    <section class="snap-start mb-5 flex m-auto justify-center w-4/5">
+                        <img class="rounded-lg shadow-md shadow-black" src="@image" alt="Image could not be loaded."/>
+                    </section>
+                }
+            }
+            else
+            {
+                <section class="snap-start mb-5 flex mx-auto justify-center w-4/5">
+                    <img class="rounded-lg shadow-md shadow-black" src="https://img.freepik.com/free-photo/empty-parking-lot-parking-lane-outdoor-public-park_1127-3374.jpg" alt="Image could not be loaded."/>
+                </section>
+            }
+        </main>
+        <div class="rounded-lg p-2 bg-white  shadow-[0px_0px_5px_5px] shadow-gray-500/20 my-5 mx-32">
+            <button class="grid grid-cols-6 rounded-lg w-full" id="advertisementButton" onclick="advertisementButtonClick()">
+                <div class="col-span-4 h-14 flex justify-between items-center rounded-l-xl text-l tracking-wide font-bold px-5">
+                    <div class="flex items-center">
+                        <div class="text-blue-700 text-4xl">#</div>
+                        <div> @Model.AdvertisementName</div>
+                    </div>
+                    <div class="">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="32" height="32">
+                            <path d="M57.236 18.127L32 40.41 6.764 18.127 4.036 21.051 29.953 46.604 32 48.622 34.047 46.604 59.964 21.051z" fill="#000000"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-span-2 h-14 rounded-r-xl">
+                    <div class="h-full flex justify-center items-center bg-yellow-500 rounded-lg text-2xl font-bold">@Model.Price.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".") TL</div>
+                </div>
+            </button>
+            <div id="advertisementButtonDiv" style="display: none;" class="origin-top-right right-0 rounded-lg m-5">
+                <div class="flex justify-start text-xl font-semibold tracking-wide">
+                    @Model.AdvertisementDescription
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<table>
-    <thead>
-    <tr>
-        <td>Id</td>
-        <td>Price</td>
-        <td>Advertisement Name</td>
-        <td>Advertisement Description</td>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>@Model.Id</td>
-        <td>@Model.Price</td>
-        <td>@Model.AdvertisementName</td>
-        <td>@Model.AdvertisementDescription</td>
-    </tr>
-    </tbody>
-</table>
-
-
-
 <script>
-    var resimIndex = 0;
-    function resimYerDegistir(event) {
-        var resim1 = document.getElementById("resim1");
-        var resim2 = document.getElementById("resim2");
-        
-        if (event.deltaY > 0) {
-            resimIndex++;
-        } else {
-            resimIndex--;
+    const divBase = document.getElementById("baseButtonDiv");
+    const buttonBase = document.getElementById("baseButton");
+    
+    const divDetails = document.getElementById("detailsButtonDiv");
+    const buttonDetails = document.getElementById("detailsButton");
+    
+    const divAdvertisement = document.getElementById("advertisementButtonDiv");
+    const buttonAdvertisement = document.getElementById("advertisementButton");
+    
+    function detailsButtonClick() {
+        if (divDetails.style.display === "none") {
+            divDetails.style.display = "block";
+            buttonDetails.style.backgroundColor = "#E5E7EB";
         }
-        
-        if (resimIndex == 0) {
-            resim1.style.zIndex = 3;
-            resim2.style.zIndex = 2;
-        }else if(resimIndex == 1) {
-            resim1.style.zIndex = 2;
-            resim2.style.zIndex = 3;
+        else {
+            divDetails.style.display = "none";
+            buttonDetails.style.backgroundColor = "#FFFFFF";           
+        }
+    }
+    
+    function baseButtonClick() {
+        if (divBase.style.display === "none") {
+            divBase.style.display = "block";
+            buttonBase.style.backgroundColor = "#E5E7EB";
+        }
+        else {
+            divBase.style.display = "none";
+            buttonBase.style.backgroundColor = "#FFFFFF";
+        }
+    }
+    
+    function advertisementButtonClick() {
+        if (divAdvertisement.style.display === "none") {
+            divAdvertisement.style.display = "block";
+            buttonAdvertisement.style.backgroundColor = "#E5E7EB";
+        }
+        else {
+            divAdvertisement.style.display = "none";
+            buttonAdvertisement.style.backgroundColor = "#FFFFFF";
         }
     }
 </script>

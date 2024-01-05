@@ -65,11 +65,7 @@
                     <td class="">
                         @if (item.CarImagesEntities.Any())
                         {
-                            @foreach (var image in item.CarImagesEntities)
-                            {
-                                <img src="@image.CarImageUrl" alt="car image"/>
-                                break;
-                            }
+                            <img src="@item.CarImagesEntities.First().CarImageUrl" alt="car image"/>
                         }
                         else
                         {
