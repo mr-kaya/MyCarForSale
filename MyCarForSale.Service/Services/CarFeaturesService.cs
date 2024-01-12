@@ -48,6 +48,12 @@ public class CarFeaturesService : GenericService<CarFeaturesEntity>, ICarFeature
         return _mapper.Map<CarFeaturesWithImageAndClassificationAndUserAccountDto>(selectedCar);
     }
 
+    public async Task<IEnumerable<CarFeaturesWithImageAndClassificationAndUserAccountDto>> GetCarPageWithId(int pageIndex, int pageSize)
+    {
+        var selectedPage = await _carFeaturesRepository.GetCarWithPageId(pageIndex, pageSize);
+        return _mapper.Map<IEnumerable<CarFeaturesWithImageAndClassificationAndUserAccountDto>>(selectedPage);
+    }
+
     public async Task UpdateSaleCarInformation(CarFeaturesWithImageAndClassificationDto entity)
     {
         var updateCar = _mapper.Map<CarFeaturesEntity>(entity);

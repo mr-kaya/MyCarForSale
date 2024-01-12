@@ -40,6 +40,13 @@ public class CarFeaturesRepository : GenericRepository<CarFeaturesEntity>, ICarF
             .Include(y => y.MainClassificationEntity).Include(z => z.UserAccountEntity).FirstOrDefaultAsync(x => x.Id == id);
     }
 
+    public async Task<List<CarFeaturesEntity>> GetCarWithPageId(int pageIndex, int pageSize)
+    {
+        return await _dbContext.FeaturesBaseEntities.Include(x => x.CarImagesEntities)
+            .Include(y => y.MainClassificationEntity).Include(z => z.UserAccountEntity).Skip((pageIndex - 1) * pageSize)
+            .Take(pageSize).ToListAsync();
+    }
+
     public void UpdateSaleCarInformation(CarFeaturesEntity entity)
     {
         _dbSet.Include(x => x.MainClassificationEntity).Include(y => y.CarImagesEntities);

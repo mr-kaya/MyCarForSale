@@ -37,7 +37,7 @@ public class CarFeaturesWithImageAndClassificationAndUserAccountService
         return responseBody.Data;
     }
 
-    public async Task<CarFeaturesWithImageAndClassificationAndUserAccountDto> GetSaleByIdAsync(int id)
+    public async Task<CarFeaturesWithImageAndClassificationAndUserAccountDto> GetSaleWithIdAsync(int id)
     {
         var response =
             await _httpClient
@@ -51,6 +51,21 @@ public class CarFeaturesWithImageAndClassificationAndUserAccountService
         return response.Data;
     }
 
+    public async Task<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>? GetSalePageWithId(int pageIndex, int pageSize)
+    {
+        var pageIndexUri = Uri.EscapeDataString(pageIndex.ToString());
+        var pageSizeUri = Uri.EscapeDataString(pageSize.ToString());
+
+        var response =
+            await _httpClient
+                .GetFromJsonAsync<CustomResponseDto<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>>(
+                    $"CarFeatures/GetSaleByPageId?pageIndex={pageIndexUri}&pageSize={pageSizeUri}");
+
+        return response.Data;
+    }
+    
+    public async Task<List<MainClassificationEntityDto>> Get
+    
     public async Task<bool> UpdateAsync(CarFeaturesEntityDto newCarFeatures)
     {
         var response = await _httpClient.PutAsJsonAsync("CarFeatures", newCarFeatures);

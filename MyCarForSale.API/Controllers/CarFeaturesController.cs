@@ -19,6 +19,60 @@ public class CarFeaturesController : CustomBaseController
         _carFeaturesService = carFeaturesService;
     }
 
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetSaleByPageId(int pageIndex, int pageSize)
+    {
+        var items = await _carFeaturesService.GetCarPageWithId(pageIndex, pageSize);
+        var itemsDto = _mapper.Map<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>(items);
+        return CreateActionResult(CustomResponseDto<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>.Success(200, itemsDto));
+    }
+
+    [HttpPost("[action]")]
+    public async Task<IActionResult> GetFindClassification(string[] carClassification)
+    {
+        IQueryable<CarFeaturesEntity> data;
+        
+        if (carClassification.Length == 1)
+        {
+            data = _service.Where(entity =>
+                entity.MainClassificationEntity!.MainClassification == carClassification[0]);
+        }
+        else if (carClassification.Length == 2)
+        {
+            data = _service.Where(entity =>
+                entity.MainClassificationEntity!.MainClassification == carClassification[0] &&
+                entity.MainClassificationEntity.CarBrand == carClassification[1]);
+        }
+        else if (carClassification.Length == 3)
+        {
+            data = _service.Where(entity =>
+                entity.MainClassificationEntity!.MainClassification == carClassification[0] &&
+                entity.MainClassificationEntity.CarBrand == carClassification[1] &&
+                entity.MainClassificationEntity.CarModel == carClassification[2]);
+        }
+        else if(carClassification.Length == 4)
+        {
+            data = _service.Where(entity =>
+                entity.MainClassificationEntity!.MainClassification == carClassification[0] &&
+                entity.MainClassificationEntity.CarBrand == carClassification[1] &&
+                entity.MainClassificationEntity.CarModel == carClassification[2] &&
+                entity.MainClassificationEntity.CarPackage == carClassification[3]);
+        }
+        else
+        {
+            data = _service.Where(entity =>
+                entity.MainClassificationEntity!.MainClassification == carClassification[0] &&
+                entity.MainClassificationEntity.CarBrand == carClassification[1] &&
+                entity.MainClassificationEntity.CarModel == carClassification[2] &&
+                entity.MainClassificationEntity.CarPackage == carClassification[3] &&
+                entity.MainClassificationEntity.CarYear == ushort.Parse(carClassification[4]));
+        }
+
+        var dataDto = _mapper.Map<List<CarFeaturesEntityDto>>(data);
+        
+        return CreateActionResult(CustomResponseDto<List<CarFeaturesEntityDto>>.Success(200, dataDto));
+    }
+    
     [HttpGet("[action]/{id}")]
     public async Task<IActionResult> GetSaleById(int id)
     {

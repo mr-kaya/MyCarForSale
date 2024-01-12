@@ -29,7 +29,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         return _dbSet.Where(expression);
     }
-
+    
     public async Task<bool> AnyAsyncTask(Expression<Func<T, bool>> expression)
     {
         return await _dbSet.AnyAsync(expression);

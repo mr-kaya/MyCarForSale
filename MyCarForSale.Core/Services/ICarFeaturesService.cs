@@ -10,6 +10,8 @@ public interface ICarFeaturesService : IGenericService<CarFeaturesEntity>
 
     Task<IEnumerable<CarFeaturesWithImageAndClassificationAndUserAccountDto>> GetAllCars();
     Task<CarFeaturesWithImageAndClassificationAndUserAccountDto> GetCarWithId(int id);
+    Task<IEnumerable<CarFeaturesWithImageAndClassificationAndUserAccountDto>> GetCarPageWithId(int pageIndex, int pageSize);
+    
     Task UpdateSaleCarInformation(CarFeaturesWithImageAndClassificationDto entity);
     Task DeleteSaleCarInformation(CarFeaturesWithImagesDto entity);
 }

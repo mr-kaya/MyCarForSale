@@ -9,6 +9,7 @@ public interface ICarFeaturesRepository : IGenericRepository<CarFeaturesEntity>
 
     Task<IEnumerable<CarFeaturesEntity>> GetAllCars();
     Task<CarFeaturesEntity> GetCarWithId(int id);
+    Task<List<CarFeaturesEntity>> GetCarWithPageId(int pageIndex, int pageSize);
     void UpdateSaleCarInformation(CarFeaturesEntity entity);
     void DeleteSaleCarInformation(CarFeaturesEntity entity);
 }

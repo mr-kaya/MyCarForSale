@@ -90,7 +90,7 @@
                     <div class="font-semibold text-end">Year:</div>
                     <div>@Model.MainClassificationEntityCarYear</div>
                     <div class="font-semibold text-end">Km:</div>
-                    <div>@Model.CarTotalKm</div>
+                    <div>@Model.CarTotalKm.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".")</div>
                 </div>
             </div>
         </div>

@@ -47,20 +47,20 @@
     <div class="flex-col text-center mx-5">
         <table id="myTable">
             <thead>
-                <tr class="sticky top-0 backdrop-blur-sm mix-blend-multiply bg-blue-200">
-                    <th class=" mx-auto py-2 px-24 whitespace-nowrap"></th>
-                    <th class="mx-auto py-2 px-10 whitespace-nowrap">Ad Title</th>
-                    <th onclick="sortTable(3)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Price</th>
-                    <th onclick="sortTable(4)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Horse Power</th>
-                    <th onclick="sortTable(5)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Torque</th>
-                    <th onclick="sortTable(6)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Transmission</th>
-                    <th onclick="sortTable(7)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Year</th>
-                </tr>
+            <tr class="sticky top-0 backdrop-blur-sm mix-blend-multiply bg-blue-200">
+                <th class=" mx-auto py-2 px-24 whitespace-nowrap"></th>
+                <th class="mx-auto py-2 px-10 whitespace-nowrap">Ad Title</th>
+                <th onclick="sortTable(3)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Price</th>
+                <th onclick="sortTable(4)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Horse Power</th>
+                <th onclick="sortTable(5)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Torque</th>
+                <th onclick="sortTable(6)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Transmission</th>
+                <th onclick="sortTable(7)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Year</th>
+            </tr>
             </thead>
-            <tbody>
+            <tbody id="listView">
             @foreach (var item in Model.CarFeatures)
             {
-                <tr id="row-@item.Id" onclick="rowClick('@item.Id')" class="max-h-4 w-auto even:bg-blue-100 odd:bg-white hover:bg-blue-50 hover:cursor-pointer">
+                <tr onclick="rowClick('@item.Id')" class="max-h-4 w-auto even:bg-blue-100 odd:bg-white hover:bg-blue-50 hover:cursor-pointer">
                     <td class="hidden"><a id="CarDetailsHref_@item.Id" class=" decoration-0" asp-area="" asp-controller="Home" asp-action="CarId" asp-route-id="@item.Id">Giriş</a></td>
                     <td class="">
                         @if (item.CarImagesEntities.Any())
@@ -90,81 +90,152 @@
                             </span>
                             <div class="text-sm"> @item.MainClassificationEntityCarPackage</div>
                         </div>
-                        </td>
-                        <td class="">@item.Price.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".")</td>
-                        <td class="">@item.EngineHorsePower</td>
-                        <td class="">@item.EngineTorque</td>
-                        <td class="">@item.TransmissionType</td>
-                        <td class="">@item.MainClassificationEntityCarYear</td>
+                    </td>
+                    <td class="">@item.Price.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".")</td>
+                    <td class="">@item.EngineHorsePower.ToString()</td>
+                    <td class="">@item.EngineTorque.ToString()</td>
+                    <td class="">@item.TransmissionType</td>
+                    <td class="">@item.MainClassificationEntityCarYear</td>
                 </tr>
             }
             </tbody>
         </table>
+        
+        <div id="loader" style="display: none;" class="flex justify-center">
+            <img src="gif/Spinner-1s-200px.gif"/>
+        </div>
     </div>
 </div>
 
-<script>
-var array = @json;
-array.forEach(carFeaturesId);
+@section Scripts
+{
+    <script type="text/javascript">
+        var pageIndex = 1;
+        var pageCount;
+        
+        $(window).scroll(function () {
+            if ($(window).scrollTop() === $(document).height() - $(window).height()) {
+                GetRecords();
+            } 
+        });
+                
+        function GetRecords() {
+            pageIndex++;
+            console.log("pageIndex : "+pageIndex+"  pageCount : "+pageCount);
+            if (pageIndex == 2 || pageIndex <= pageCount) {
+                $("#loader").show();
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("LoadMorePage", "Home")',
+                    data: {"pageIndex": pageIndex},
+                    dataType: "json",
+                    success: function (data) {
+                        pageCount = data.infiniteScrollCount;
+                        
+                        data.carFeatures.forEach(item => {                        
+                        var price = item.price;
+                        var formattedPrice = price.toLocaleString("tr-TR", {useGrouping: true});
+                        var priceResult = formattedPrice.replace(/,/g, ".");
+                        
+                        var dataHtml;
+                        if (item.carImagesEntities.length !== 0) {
+                            dataHtml = "<tr onclick='rowClick("+item.id+")' class='max-h-4 w-auto even:bg-blue-100 odd:bg-white hover:bg-blue-50 hover:cursor-pointer'>"+
+                            "<td class='hidden'><a href='/Home/CarId/"+item.id+"' id='CarDetailsHref_"+item.id+"' class='decoration-0' asp-area='' asp-controller='Home' asp-action='CarId' asp-route-id="+item.id+">Giriş</a></td>"+
+                            "<td><img src='"+item.carImagesEntities[0].carImageUrl+"' alt='car image'/></td>"+
+                            "<td><div class='w-full font-semibold'>"+item.advertisementName+"</div><br/><div class='w-full flex items-center mx-3'><div class='text-sm'> "+item.mainClassificationEntityCarBrand+" </div>"+
+                                "<span><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='16' height='16'><path d='M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z' fill='#4B5563' /></svg></span>"+
+                                "<div class='text-sm'> "+item.mainClassificationEntityCarModel+" </div><span><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='16' height='16'><path d='M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z' fill='#4B5563' /></svg></span>"+
+                                "<div class='text-sm'> "+item.mainClassificationEntityCarPackage+"</div></div></td>"+
+                            "<td>"+priceResult+"</td>"+
+                            "<td>"+item.engineHorsePower+"</td>"+
+                            "<td>"+item.engineTorque+"</td>"+
+                            "<td>"+item.transmissionType+"</td>"+
+                            "<td>"+item.mainClassificationEntityCarYear+"</td>"+
+                            "</tr>";    
+                        } else {
+                            dataHtml = "<tr onclick='rowClick("+item.id+")' class='max-h-4 w-auto even:bg-blue-100 odd:bg-white hover:bg-blue-50 hover:cursor-pointer'>"+
+                            "<td class='hidden'><a href='/Home/CarId/"+item.id+"' id='CarDetailsHref_"+item.id+"' class='decoration-0' asp-area='' asp-controller='Home' asp-action='CarId' asp-route-id="+item.id+">Giriş</a></td>"+
+                            "<td><img src='https://img.freepik.com/free-photo/empty-parking-lot-parking-lane-outdoor-public-park_1127-3374.jpg' alt='car image'/></td>"+
+                            "<td><div class='w-full font-semibold'>"+item.advertisementName+"</div><br/><div class='w-full flex items-center mx-3'><div class='text-sm'> "+item.mainClassificationEntityCarBrand+" </div>"+
+                                "<span><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='16' height='16'><path d='M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z' fill='#4B5563' /></svg></span>"+
+                                "<div class='text-sm'> "+item.mainClassificationEntityCarModel+" </div><span><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='16' height='16'><path d='M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z' fill='#4B5563' /></svg></span>"+
+                                "<div class='text-sm'> "+item.mainClassificationEntityCarPackage+"</div></div></td>"+
+                            "<td>"+priceResult+"</td>"+
+                            "<td>"+item.engineHorsePower+"</td>"+
+                            "<td>"+item.engineTorque+"</td>"+
+                            "<td>"+item.transmissionType+"</td>"+
+                            "<td>"+item.mainClassificationEntityCarYear+"</td>"+
+                            "</tr>";
+                        }
+                            
+                       
+                        $("#listView").append(dataHtml);
+                        });
+                        $("#loader").hide();
+                    },
+                    error: function (err) {
+                        alert(err.statusText);
+                    }
+                });
+            }
+        }
+    </script>
 
-function carFeaturesId(item) {
-    const row = document.getElementById(`row-${item}`);
-    row.addEventListener("click", ()=> {
-       //window.location.href = `/Home/Sale/${item}`; 
-    });
-}
-
-function rowClick(id) {
-    document.querySelector("a#CarDetailsHref_"+id).click();
-}
-</script>
+    <script>
+    function rowClick(id) {
+        document.querySelector("a#CarDetailsHref_"+id).click();
+    }
+    </script>
 
 
-<script>
-function sortTable(columnIndex) {
-    const table = document.getElementById('myTable');
-    const rows = Array.from(table.querySelectorAll('tbody tr'));
+    <script>
+    function sortTable(columnIndex) {
+        const table = document.getElementById('myTable');
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+        
+        // Sıralama işlevini tanımlayın
+        const sortFunction = (a, b) => {
+            let aValue = a.cells[columnIndex].textContent;
+            let bValue = b.cells[columnIndex].textContent;
     
-    // Sıralama işlevini tanımlayın
-    const sortFunction = (a, b) => {
-        let aValue = a.cells[columnIndex].textContent;
-        let bValue = b.cells[columnIndex].textContent;
-
-        //Fiyat kısmındaki "." ları çıkarıp ayrıca karşılaştırmasını yaptım.
-        if (columnIndex === 3) {
-            aValue = aValue.split('.').join("");
-            bValue = bValue.split('.').join("");
+            //Fiyat kısmındaki "." ları çıkarıp ayrıca karşılaştırmasını yaptım.
+            if (columnIndex === 3) {
+                aValue = aValue.split('.').join("");
+                bValue = bValue.split('.').join("");
+            }
             
-            if (Number(aValue) < Number(bValue)) {
+            if (columnIndex !== 6) {
+                if (Number(aValue) < Number(bValue)) {
+                    return -1;
+                } else if (Number(aValue) > Number(bValue)) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+            
+            // Sıralama yöntemine göre karşılaştırma yapın
+            if (aValue < bValue) {
                 return -1;
-            } else if (Number(aValue) > Number(bValue)) {
+            } else if (aValue > bValue) {
                 return 1;
             } else {
                 return 0;
             }
-        }
-        
-        // Sıralama yöntemine göre karşılaştırma yapın
-        if (aValue < bValue) {
-            return -1;
-        } else if (aValue > bValue) {
-            return 1;
+        };
+    
+        // Sıralama işlevini kullanarak satırları yeniden düzenleyin
+        rows.sort(sortFunction);
+    
+        // Sıralama yönüne göre tersine çevirin (desc)
+        if (table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.contains('desc')) {
+            rows.reverse();
+            table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.remove('desc');
         } else {
-            return 0;
+            table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.add('desc');
         }
-    };
-
-    // Sıralama işlevini kullanarak satırları yeniden düzenleyin
-    rows.sort(sortFunction);
-
-    // Sıralama yönüne göre tersine çevirin (desc)
-    if (table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.contains('desc')) {
-        rows.reverse();
-        table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.remove('desc');
-    } else {
-        table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.add('desc');
+    
+        table.querySelector('tbody').append(...rows); 
     }
-
-    table.querySelector('tbody').append(...rows); 
+    </script>
 }
-</script>
