@@ -41,6 +41,13 @@ public class CarFeaturesRepository : GenericRepository<CarFeaturesEntity>, ICarF
             .Include(y => y.MainClassificationEntity).Include(z => z.UserAccountEntity).FirstOrDefaultAsync(x => x.Id == id);
     }
 
+    public async Task<List<CarFeaturesEntity>> GetMyCarsWithMyId(int id)
+    {
+        return await _dbContext.FeaturesBaseEntities.Include(x => x.CarImagesEntities)
+            .Include(y => y.MainClassificationEntity).Include(z => z.UserAccountEntity)
+            .Where(x => x.PublishUserId == id).ToListAsync();
+    }
+
     public async Task<List<CarFeaturesEntity>> GetCarListWhere(Expression<Func<CarFeaturesEntity, bool>> expression, int pageIndex, int pageSize)
     {
         return await _dbContext.FeaturesBaseEntities.Include(x => x.CarImagesEntities)

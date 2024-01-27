@@ -49,6 +49,12 @@ public class CarFeaturesService : GenericService<CarFeaturesEntity>, ICarFeature
         return _mapper.Map<CarFeaturesWithImageAndClassificationAndUserAccountDto>(selectedCar);
     }
 
+    public async Task<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>> GetMyCarsWithMyId(int id)
+    {
+        var selectedCars = await _carFeaturesRepository.GetMyCarsWithMyId(id);
+        return _mapper.Map<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>(selectedCars);
+    }
+
     public async Task<IEnumerable<CarFeaturesWithImageAndClassificationAndUserAccountDto>> GetCarListWhere(
         Expression<Func<CarFeaturesEntity, bool>> expression, int pageIndex, int pageSize)
     {

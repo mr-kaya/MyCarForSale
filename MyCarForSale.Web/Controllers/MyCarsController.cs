@@ -108,4 +108,18 @@ public class MyCarsController : Controller
         System.IO.File.Delete(randomPath);
         return Json("");
     }
+
+    public async Task<IActionResult> ListPage()
+    {
+        var userAllCars = await _myCarsService.GetSingleUserCars();
+
+        return View(userAllCars);
+    }
+
+    public async Task<IActionResult> DeleteCarOnListPage(int userId, int carId)
+    {
+        bool boolDeleted = await _myCarsService.DeleteMySelectCar(userId, carId);
+
+        return RedirectToAction("ListPage", "MyCars");
+    }
 }

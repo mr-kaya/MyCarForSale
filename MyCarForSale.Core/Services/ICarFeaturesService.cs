@@ -11,6 +11,7 @@ public interface ICarFeaturesService : IGenericService<CarFeaturesEntity>
 
     Task<IEnumerable<CarFeaturesWithImageAndClassificationAndUserAccountDto>> GetAllCars();
     Task<CarFeaturesWithImageAndClassificationAndUserAccountDto> GetCarWithId(int id);
+    Task<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>> GetMyCarsWithMyId(int id);
 
     Task<IEnumerable<CarFeaturesWithImageAndClassificationAndUserAccountDto>> GetCarListWhere(
         Expression<Func<CarFeaturesEntity, bool>> expression, int pageIndex, int pageSize);

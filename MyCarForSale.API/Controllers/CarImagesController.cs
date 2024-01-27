@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyCarForSale.Core.DTOs;
 using MyCarForSale.Core.Entities;
 using MyCarForSale.Core.Services;
@@ -55,6 +56,15 @@ public class CarImagesController : CustomBaseController
     {
         var selectImage = await _service.GetByIdAsyncTask(id);
         await _service.DeleteAsyncTask(selectImage);
+        return CreateActionResult(CustomNoContentResponseDto.Success(204));
+    }
+
+    [HttpDelete("[Action]/{id}")]
+    public async Task<IActionResult> DeleteAll(int id)
+    {
+        var getImageList = await _service.Where(x => x.BaseEntityId == id).ToListAsync();
+        await _service.DeleteRangeAsyncTask(getImageList);
+
         return CreateActionResult(CustomNoContentResponseDto.Success(204));
     }
 }

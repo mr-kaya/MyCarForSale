@@ -90,7 +90,7 @@
     else
     {
         <div class="m-auto flex justify-center align-middle flex-row">
-            <div class="relative flex flex-col text-center mx-5 border-4 border-black border-separate rounded-xl">
+            <div class="relative flex flex-col text-center mx-5 border-4 border-gray-100 border-separate rounded-xl">
                 <table class="blur-[3px]">
                     <caption></caption>
                     <thead>
@@ -294,95 +294,98 @@
                     </tr>
                     </tbody>
                 </table>
-                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  bg-red-300 px-5 py-3 rounded-xl font-bold text-xl text-black">You have not added any ads to your favorites.</div>
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  bg-red-300 px-5 py-3 rounded-xl font-bold text-xl text-black">Your favorite car ads appear here.</div>
             </div>
         </div>
     }
 </div>
 
-<script>
-    let svg1 = document.querySelector(".svg1");
-    let svg2 = document.querySelector(".svg2");
-    let container = document.getElementById("container");
-    
-    container.addEventListener("click", function() {
-        if (svg1.style.display === "none") {
-            svg1.style.display = "block";
-            svg2.style.display = "none";
-            svg1.style.opacity = "1";
-            svg2.style.opacity = "0";
-        } else {
-            svg1.style.display = "none";
-            svg2.style.display = "block";
-            svg1.style.opacity = "0";
-            svg2.style.opacity = "1";
-        }
-    });
-</script>
-
-<script>
-var array = @json;
-
-
-function rowClick(id, e) {
-    if (e.target.parentNode.tagName === "svg") {
-        e.target.parentNode.style.filter = "brightness(10%)";
+@section Scripts
+{
+    <script>
+        let svg1 = document.querySelector(".svg1");
+        let svg2 = document.querySelector(".svg2");
+        let container = document.getElementById("container");
         
-        document.querySelector("a#CarDeleteHref_"+id).click();
-        
-        return;    
-    }
+        container.addEventListener("click", function() {
+            if (svg1.style.display === "none") {
+                svg1.style.display = "block";
+                svg2.style.display = "none";
+                svg1.style.opacity = "1";
+                svg2.style.opacity = "0";
+            } else {
+                svg1.style.display = "none";
+                svg2.style.display = "block";
+                svg1.style.opacity = "0";
+                svg2.style.opacity = "1";
+            }
+        });
+    </script>
     
-    document.querySelector("a#CarDetailsHref_"+id).click();
-}
-</script>
-
-
-<script>
-function sortTable(columnIndex) {
-    const table = document.getElementById('myTable');
-    const rows = Array.from(table.querySelectorAll('tbody tr'));
+    <script>
+    var array = @json;
     
-    // Sıralama işlevini tanımlayın
-    const sortFunction = (a, b) => {
-        let aValue = a.cells[columnIndex].textContent;
-        let bValue = b.cells[columnIndex].textContent;
-
-        //Fiyat kısmındaki "." ları çıkarıp ayrıca karşılaştırmasını yaptım.
-        if (columnIndex === 3) {
-            aValue = aValue.split('.').join("");
-            bValue = bValue.split('.').join("");
+    
+    function rowClick(id, e) {
+        if (e.target.parentNode.tagName === "svg") {
+            e.target.parentNode.style.filter = "brightness(10%)";
             
-            if (Number(aValue) < Number(bValue)) {
+            document.querySelector("a#CarDeleteHref_"+id).click();
+            
+            return;    
+        }
+        
+        document.querySelector("a#CarDetailsHref_"+id).click();
+    }
+    </script>
+    
+    
+    <script>
+    function sortTable(columnIndex) {
+        const table = document.getElementById('myTable');
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+        
+        // Sıralama işlevini tanımlayın
+        const sortFunction = (a, b) => {
+            let aValue = a.cells[columnIndex].textContent;
+            let bValue = b.cells[columnIndex].textContent;
+    
+            //Fiyat kısmındaki "." ları çıkarıp ayrıca karşılaştırmasını yaptım.
+            if (columnIndex === 3) {
+                aValue = aValue.split('.').join("");
+                bValue = bValue.split('.').join("");
+                
+                if (Number(aValue) < Number(bValue)) {
+                    return -1;
+                } else if (Number(aValue) > Number(bValue)) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+            
+            // Sıralama yöntemine göre karşılaştırma yapın
+            if (aValue < bValue) {
                 return -1;
-            } else if (Number(aValue) > Number(bValue)) {
+            } else if (aValue > bValue) {
                 return 1;
             } else {
                 return 0;
             }
-        }
-        
-        // Sıralama yöntemine göre karşılaştırma yapın
-        if (aValue < bValue) {
-            return -1;
-        } else if (aValue > bValue) {
-            return 1;
+        };
+    
+        // Sıralama işlevini kullanarak satırları yeniden düzenleyin
+        rows.sort(sortFunction);
+    
+        // Sıralama yönüne göre tersine çevirin (desc)
+        if (table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.contains('desc')) {
+            rows.reverse();
+            table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.remove('desc');
         } else {
-            return 0;
+            table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.add('desc');
         }
-    };
-
-    // Sıralama işlevini kullanarak satırları yeniden düzenleyin
-    rows.sort(sortFunction);
-
-    // Sıralama yönüne göre tersine çevirin (desc)
-    if (table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.contains('desc')) {
-        rows.reverse();
-        table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.remove('desc');
-    } else {
-        table.querySelector('th:nth-child(' + (columnIndex) + ')').classList.add('desc');
+    
+        table.querySelector('tbody').append(...rows); 
     }
-
-    table.querySelector('tbody').append(...rows); 
+    </script>
 }
-</script>

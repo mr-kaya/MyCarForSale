@@ -79,6 +79,15 @@ public class CarFeaturesController : CustomBaseController
         var sale = await _carFeaturesService.GetCarWithId(id);
         return CreateActionResult(CustomResponseDto<CarFeaturesWithImageAndClassificationAndUserAccountDto>.Success(200, sale));
     }
+
+    [HttpGet("[action]/{id}")]
+    public async Task<IActionResult> GetMySalesCarWithMyId(int id)
+    {
+        var sales = await _carFeaturesService.GetMyCarsWithMyId(id);
+
+        return CreateActionResult(
+            CustomResponseDto<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>.Success(200, sales));
+    }
     
     [HttpGet("[action]")]
     public async Task<IActionResult> GetCarWithImages()
