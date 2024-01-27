@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using MyCarForSale.Core.DTOs;
 using MyCarForSale.Core.Entities;
 using MyCarForSale.Core.Repositories;
@@ -38,6 +39,13 @@ public class CarFeaturesRepository : GenericRepository<CarFeaturesEntity>, ICarF
     {
         return await _dbContext.FeaturesBaseEntities.Include(x => x.CarImagesEntities)
             .Include(y => y.MainClassificationEntity).Include(z => z.UserAccountEntity).FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task<List<CarFeaturesEntity>> GetCarListWhere(Expression<Func<CarFeaturesEntity, bool>> expression, int pageIndex, int pageSize)
+    {
+        return await _dbContext.FeaturesBaseEntities.Include(x => x.CarImagesEntities)
+            .Include(y => y.MainClassificationEntity).Include(z => z.UserAccountEntity).Where(expression).Skip((pageIndex - 1) * pageSize)
+            .Take(pageSize).ToListAsync();
     }
 
     public async Task<List<CarFeaturesEntity>> GetCarWithPageId(int pageIndex, int pageSize)

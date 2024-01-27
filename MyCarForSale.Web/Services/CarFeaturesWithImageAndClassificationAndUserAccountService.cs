@@ -1,4 +1,5 @@
 ﻿using MyCarForSale.Core.DTOs;
+using MyCarForSale.Web.Controllers;
 
 namespace MyCarForSale.Web.Services;
 
@@ -51,20 +52,35 @@ public class CarFeaturesWithImageAndClassificationAndUserAccountService
         return response.Data;
     }
 
-    public async Task<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>? GetSalePageWithId(int pageIndex, int pageSize)
+    public async Task<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>? GetSalePageWithId(MainPageFilterVariable model)
     {
-        var pageIndexUri = Uri.EscapeDataString(pageIndex.ToString());
-        var pageSizeUri = Uri.EscapeDataString(pageSize.ToString());
-
         var response =
             await _httpClient
-                .GetFromJsonAsync<CustomResponseDto<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>>(
+                .PostAsJsonAsync($"CarFeatures/GetSaleByPageId", model);
+
+        var i = model.carClassification.Count;
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content
+                .ReadFromJsonAsync<CustomResponseDto<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>>();
+
+            return result.Data;
+        }
+        
+        return null;
+
+        //var pageIndexUri = Uri.EscapeDataString(pageIndex.ToString());
+        //var pageSizeUri = Uri.EscapeDataString(pageSize.ToString());
+
+        /*
+         var response =
+            await _httpClient
+                .PostAsJsonAsync<CustomResponseDto<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>>(
                     $"CarFeatures/GetSaleByPageId?pageIndex={pageIndexUri}&pageSize={pageSizeUri}");
 
         return response.Data;
+         */
     }
-    
-    public async Task<List<MainClassificationEntityDto>> Get
     
     public async Task<bool> UpdateAsync(CarFeaturesEntityDto newCarFeatures)
     {

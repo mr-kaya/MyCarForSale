@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+using AutoMapper;
 using MyCarForSale.Core.DTOs;
 using MyCarForSale.Core.Entities;
 using MyCarForSale.Core.Repositories;
@@ -46,6 +47,13 @@ public class CarFeaturesService : GenericService<CarFeaturesEntity>, ICarFeature
         }
         
         return _mapper.Map<CarFeaturesWithImageAndClassificationAndUserAccountDto>(selectedCar);
+    }
+
+    public async Task<IEnumerable<CarFeaturesWithImageAndClassificationAndUserAccountDto>> GetCarListWhere(
+        Expression<Func<CarFeaturesEntity, bool>> expression, int pageIndex, int pageSize)
+    {
+        var whereCar = await _carFeaturesRepository.GetCarListWhere(expression, pageIndex, pageSize);
+        return _mapper.Map<IEnumerable<CarFeaturesWithImageAndClassificationAndUserAccountDto>>(whereCar);
     }
 
     public async Task<IEnumerable<CarFeaturesWithImageAndClassificationAndUserAccountDto>> GetCarPageWithId(int pageIndex, int pageSize)

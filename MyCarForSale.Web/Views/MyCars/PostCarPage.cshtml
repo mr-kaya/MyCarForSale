@@ -1,0 +1,548 @@
+﻿@model MyCarForSale.Web.Controllers.MyCarCustomList;
+
+@{
+    var seenMake = new HashSet<string>();
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<div class="mx-auto m-10 rounded-2xl bg-gray-200 p-10">
+    <div class="sm:grid sm:grid-cols-3">
+        <div class="rounded-2xl p-5 bg-blue-200 mb-auto">
+
+            <div class="relative w-80 h-12">
+                <select id="classificationId" onchange="getClassification(this)" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900" placeholder=" ">
+                    <option value="">-- Select Classification --</option>
+                    @foreach (var i in Model.MainClassificationEntityDtos)
+                    {
+                        if (seenMake.Add(i.MainClassification))
+                        {
+                            <option value="@i.MainClassification">@i.MainClassification</option>
+                        }
+                    }
+                    <option value="Other">Other</option>
+                </select>
+                <label class="flex w-full h-full select-none pointer-events-none absolute left-0 font-bold !overflow-visible truncate peer-placeholder-shown:text-blue-gray-500 leading-tight peer-focus:leading-tight peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500 transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:content[' '] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Class</label>
+            </div>
+            <div id="classificationInputId" style="display: none" class="relative w-80 h-12">
+                <hr class="bg-white"/>
+                <input id="classificationInputIdText" type="text" placeholder="Enter Your Own Vehicle Class" class="peer w-full h-full rounded-b-[7px] px-4 font-semibold font-sans text-sm text-gray-800  capitalize first-letter:uppercase    outline outline-0 transition-all focus:border-2 focus:border-gray-900">
+            </div>
+
+            <div class="relative w-80 h-12 mt-5">
+                <select id="makeId" onchange="getMake(this)" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900" placeholder=" ">
+                </select>
+                <label class="flex w-full h-full select-none pointer-events-none absolute left-0 font-bold !overflow-visible truncate peer-placeholder-shown:text-blue-gray-500 leading-tight peer-focus:leading-tight peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500 transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:content[' '] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Make</label>
+            </div>
+            <div id="makeInputId" style="display: none" class="relative w-80 h-12">
+                <hr class="bg-white"/>
+                <input id="makeInputIdText" type="text" placeholder="Enter Your Own Vehicle Brand" class="peer w-full h-full rounded-b-[7px] px-4 font-semibold font-sans text-sm text-gray-800  capitalize first-letter:uppercase    outline outline-0 transition-all focus:border-2 focus:border-gray-900">
+            </div>
+
+            <div class="relative w-80 h-12 mt-5">
+                <select id="modelId" onchange="getModel(this)" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all  focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900" placeholder=" ">
+                </select>
+                <label class="flex w-full h-full select-none pointer-events-none absolute left-0 font-bold !overflow-visible truncate peer-placeholder-shown:text-blue-gray-500 leading-tight peer-focus:leading-tight peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500 transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:content[' '] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Model</label>
+            </div>
+            <div id="modelInputId" style="display: none" class="relative w-80 h-12">
+                <hr class="bg-white"/>
+                <input id="modelInputIdText" type="text" placeholder="Enter Your Own Vehicle Model" class="peer w-full h-full rounded-b-[7px] px-4 font-semibold font-sans text-sm text-gray-800  capitalize first-letter:uppercase    outline outline-0 transition-all focus:border-2 focus:border-gray-900">
+            </div>
+
+            <div class="relative w-80 h-12 mt-5">
+                <select id="packageId" onchange="getPackage(this)" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all  focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900" placeholder=" ">
+                </select>
+                <label class="flex w-full h-full select-none pointer-events-none absolute left-0 font-bold !overflow-visible truncate peer-placeholder-shown:text-blue-gray-500 leading-tight peer-focus:leading-tight peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500 transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:content[' '] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Package</label>
+            </div>
+            <div id="packageInputId" style="display: none" class="relative w-80 h-12">
+                <hr class="bg-white"/>
+                <input id="packageInputIdText" type="text" placeholder="Enter Your Own Vehicle Package" class="peer w-full h-full rounded-b-[7px] px-4 font-semibold font-sans text-sm text-gray-800  capitalize first-letter:uppercase    outline outline-0 transition-all focus:border-2 focus:border-gray-900">
+            </div>
+
+            <div class="relative w-80 h-12 mt-5">
+                <select id="yearId" onchange="getYearFinal(this)" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all  focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900" placeholder=" ">
+                </select>
+                <label class="flex w-full h-full select-none pointer-events-none absolute left-0 font-bold !overflow-visible truncate peer-placeholder-shown:text-blue-gray-500 leading-tight peer-focus:leading-tight peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500 transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:content[' '] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Year</label>
+            </div>
+            <div id="yearInputId" style="display: none" class="relative w-80 h-12">
+                <hr class="bg-white"/>
+                <input id="yearInputIdText" type="number" oninput="if (value.length > 4) value = value.slice(0,4);" onfocusout="waitingToPost()" maxlength="4" placeholder="Enter Your Own Vehicle Year" class="peer w-full h-full rounded-b-[7px] px-4 font-semibold font-sans text-sm text-gray-800  capitalize first-letter:uppercase    outline outline-0 transition-all focus:border-2 focus:border-gray-900">
+            </div>
+
+        </div>
+
+        <div id="MiddleId" style="display: none" class="container flex w-full h-full justify-between rounded-xl p-5 col-span-2">
+            <div class="hidden md:flex justify-center border-4 rounded-full w-0 border-solid border-gray-400 h-full"></div>
+            <form method="post" class="mx-5 rounded-xl h-full w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="relative h-12">
+                    <input asp-for="CarFeaturesEntityDto.AdvertisementName" id="adBanner" type="text" maxlength="50" onkeyup="countInputLength(this, 'bannerSpanCounter')" oninput="if (value.length > 50) {
+                        value = value.slice(0, 50);
+                    }" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900">
+                    <span id="bannerSpanCounter" class="flex w-full h-full pointer-events-none absolute left-[85%] font-bold truncate leading-tight transition-all top-2/3 text-[12px] peer-focus:text-[11px]">0/50</span>
+                    <label asp-for="CarFeaturesEntityDto.AdvertisementName" for="adBanner" class="flex w-full h-full pointer-events-none absolute left-0 font-bold truncate leading-tight peer-focus:leading-tight transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Ad Banner</label>
+                </div>
+                <div class="relative h-12">
+                    <input asp-for="CarFeaturesEntityDto.Price" id="price" type="text" maxlength="21" onkeypress="return isNumberKey(event, this)" onkeyup="countInputLength(this, 'priceSpanCounter')" oninput="if (value.length > 21) {
+                                    value = value.slice(0, 21);
+                                }" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900">
+                    <span id="priceSpanCounter" class="flex w-full h-full pointer-events-none absolute left-[85%] font-bold truncate leading-tight transition-all top-2/3 text-[12px] peer-focus:text-[11px]">0/21</span>
+                    <label asp-for="CarFeaturesEntityDto.Price" for="price" class="flex w-full h-full pointer-events-none absolute left-0 font-bold truncate leading-tight peer-focus:leading-tight transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Price</label>
+                </div>
+                <div class="relative h-24">
+                    <textarea asp-for="CarFeaturesEntityDto.AdvertisementDescription" id="adDescription" type="text" maxlength="500" onkeyup="countInputLength(this, 'bannerDescriptionSpanCounter')" oninput="if (value.length > 500) value = value.slice(0,500);" style="resize: none" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900"></textarea>
+                    <span id="bannerDescriptionSpanCounter" class="flex w-full h-full pointer-events-none absolute left-[80%] font-bold truncate leading-tight transition-all top-[85%] text-[12px] peer-focus:text-[11px]">0/500</span>
+                    <label asp-for="CarFeaturesEntityDto.AdvertisementDescription" for="adDescription" class="flex w-full h-full pointer-events-none absolute left-0 font-bold truncate leading-tight peer-focus:leading-tight transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Ad Description</label>
+                </div>
+                <div class="relative h-12">
+                    <input asp-for="CarFeaturesEntityDto.CarTotalKm" id="totalKm" type="text" maxlength="10" onkeypress="return isNumberKey(event, this)" onkeyup="countInputLength(this, 'totalKmSpanCounter')" oninput="if (value.length > 10) {
+                                                value = value.slice(0, 10);
+                                            }" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900">
+                    <span id="totalKmSpanCounter" class="flex w-full h-full pointer-events-none absolute left-[85%] font-bold truncate leading-tight transition-all top-2/3 text-[12px] peer-focus:text-[11px]">0/10</span>
+                    <label asp-for="CarFeaturesEntityDto.CarTotalKm" for="totalKm" class="flex w-full h-full pointer-events-none absolute left-0 font-bold truncate leading-tight peer-focus:leading-tight transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Km</label>
+                </div>
+                <div class="relative h-12">
+                    <select asp-for="CarFeaturesEntityDto.CarDrivetrain" id="drivetrainId" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all  focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900">
+                        <option value="Front" selected>Front Wheel Drive</option>
+                        <option value="Back">Rear Wheel Drive</option>
+                        <option value="FourMotion">Four Wheel Drive</option>
+                    </select>
+                    <label asp-for="CarFeaturesEntityDto.CarDrivetrain" for="drivetrainId" class="flex w-full h-full pointer-events-none absolute left-0 font-bold truncate leading-tight peer-focus:leading-tight transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Drive Type</label>
+                </div>
+                <div class="relative h-12">
+                    <select asp-for="CarFeaturesEntityDto.EngineFuelType" id="fuelTypeId" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all  focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900">
+                        <option value="Gasoline" selected>Gasoline</option>
+                        <option value="Diesel">Diesel</option>
+                        <option value="Hybrid">Hybrid</option>
+                        <option value="Electric">Electric</option>
+                        <option value="LPG">LPG</option>
+                        <option value="Hydrogen">Hydrogen</option>
+                    </select>
+                    <label asp-for="CarFeaturesEntityDto.EngineFuelType" for="fuelTypeId" class="flex w-full h-full pointer-events-none absolute left-0 font-bold truncate leading-tight peer-focus:leading-tight transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Fuel Type</label>
+                </div>
+                <div class="relative h-12">
+                    <select asp-for="CarFeaturesEntityDto.TransmissionType" id="transmissionId" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all  focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900">
+                        <option value="Automatic" selected>Automatic</option>
+                        <option value="Manuel">Manuel</option>
+                        <option value="Semi-Automatic">Semi-Automatic</option>
+                    </select>
+                    <label asp-for="CarFeaturesEntityDto.TransmissionType" for="transmissionId" class="flex w-full h-full pointer-events-none absolute left-0 font-bold truncate leading-tight peer-focus:leading-tight transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Transmission Type</label>
+                </div>
+                <div class="relative h-12">
+                    <select asp-for="CarFeaturesEntityDto.CarGuarantee" id="carGuaranteeId" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all  focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900">
+                        <option value="true" selected>Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                    <label asp-for="CarFeaturesEntityDto.CarGuarantee" for="carGuaranteeId" class="flex w-full h-full pointer-events-none absolute left-0 font-bold truncate leading-tight peer-focus:leading-tight transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Car Guarantee</label>
+                </div>
+                <div class="relative h-12">
+                    <input asp-for="CarFeaturesEntityDto.EngineHorsePower" id="engineHorsePowerId" type="text" maxlength="5" onkeypress="return isNumberKey(event, this)" onkeyup="countInputLength(this, 'engineHorsePowerSpanCounter')" oninput="if (value.length > 5) {
+                                                            value = value.slice(0, 5);
+                                                        }" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900">
+                    <span id="engineHorsePowerSpanCounter" class="flex w-full h-full pointer-events-none absolute left-[85%] font-bold truncate leading-tight transition-all top-2/3 text-[12px] peer-focus:text-[11px]">0/5</span>
+                    <label asp-for="CarFeaturesEntityDto.EngineHorsePower" for="engineHorsePowerSpanCounter" class="flex w-full h-full pointer-events-none absolute left-0 font-bold truncate leading-tight peer-focus:leading-tight transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Engine Horse Power</label>
+                </div>
+                <div class="relative h-12">
+                    <input asp-for="CarFeaturesEntityDto.EngineTorque" id="engineTorqueId" type="text" maxlength="5" onkeypress="return isNumberKey(event, this)" onkeyup="countInputLength(this, 'engineTorqueSpanCounter')" oninput="if (value.length > 5) {
+                                                            value = value.slice(0, 5);
+                                                        }" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900">
+                    <span id="engineTorqueSpanCounter" class="flex w-full h-full pointer-events-none absolute left-[85%] font-bold truncate leading-tight transition-all top-2/3 text-[12px] peer-focus:text-[11px]">0/5</span>
+                    <label asp-for="CarFeaturesEntityDto.EngineTorque" for="engineTorqueSpanCounter" class="flex w-full h-full pointer-events-none absolute left-0 font-bold truncate leading-tight peer-focus:leading-tight transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Engine Torque</label>
+                </div>
+                <div class="relative h-12">
+                    <input asp-for="CarFeaturesEntityDto.EngineDisplacement" id="engineDisplacementId" type="text" maxlength="3" onkeypress="return isNumberKey(event, this)" onfocusout="displacementDotZero(this)" onkeyup="countInputLength(this, 'engineDisplacementSpanCounter')" oninput="if (value.length > 3) {
+                                                                        value = value.slice(0, 3);
+                                                                    }" class="peer w-full h-full bg-white text-gray-800 font-sans font-semibold outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all focus:border-2 focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900">
+                    <span id="engineDisplacementSpanCounter" class="flex w-full h-full pointer-events-none absolute left-[85%] font-bold truncate leading-tight transition-all top-2/3 text-[12px] peer-focus:text-[11px]">0/3</span>
+                    <label asp-for="CarFeaturesEntityDto.EngineDisplacement" for="engineDisplacementSpanCounter" class="flex w-full h-full pointer-events-none absolute left-0 font-bold truncate leading-tight peer-focus:leading-tight transition-all -top-1.5 peer-placeholder-shown:text-sm text-[13px] peer-focus:text-[11px] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-800 peer-focus:text-gray-900 before:border-white peer-focus:before:!border-gray-900 after:border-white peer-focus:after:!border-gray-900">Engine Displacement</label>
+                </div>
+                <div class="hidden">
+                    <label asp-for="CarFeaturesEntityDto.MainClassificationEntityId"></label>
+                    <input asp-for="CarFeaturesEntityDto.MainClassificationEntityId" id="mainClassificationId"/>
+                </div>
+                <div class="hidden">
+                    <label asp-for="CarFeaturesEntityDto.PublishUserId"></label>
+                    <input asp-for="CarFeaturesEntityDto.PublishUserId" value="@ViewBag.UserId">
+                </div>
+                <div class="col-span-1 md:col-span-2">
+                    <button onclick="MiddleSendClick()" asp-action="PostCarDetails" asp-controller="MyCars" class="w-full bg-blue-600 text-white font-semibold rounded-2xl py-2">Post a Vehicle Ad</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function displacementDotZero(input) {
+            var value = input.value;
+            
+            if (value.length === 1) {
+                value = value + ".0";
+                input.value = value;
+            }
+            else if (value.length === 3 && value[1] !== '.') {
+                value = value[0] + '.' + value[1];
+                input.value = value;
+            }
+        }
+    
+        function countInputLength(input, elementId) {
+            if (elementId === 'totalKmSpanCounter' || elementId === 'priceSpanCounter') {
+                var value = input.value;
+                value = value.split('.').join('');
+                value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                input.value = value;
+            }
+            else if (elementId === 'engineDisplacementSpanCounter' && input.value.length < 3) {
+                var value = input.value;
+                value = value.split('.').join('');
+                value = value.replace(/\B(?=(\d{1})+(?!\d))/g, ".");
+                input.value = value;
+            }
+            
+            var maxLength = input.getAttribute('maxLength');
+            document.getElementById(elementId).innerHTML = input.value.length + '/' + maxLength;
+        }
+        
+        function isNumberKey(evt, input) {
+            var inputBool = false;
+            var inputBool = (input.value[0] == 0) ? false : true;
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            
+            if (!inputBool || charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+    </script>
+
+    <script type="text/javascript">
+        var globalSelectClassification = "";
+        var globalSelectMake = "";
+        var globalSelectModel = "";
+        var globalSelectPackage = "";
+        var globalSelectYear = "";
+        var globalSelectId = "";
+        
+        var model = @Html.Raw(Json.Serialize(Model.MainClassificationEntityDtos));
+    
+        function getClassification(obj) {
+            $('#MiddleId').css('display', 'none');
+            globalSelectClassification = obj.value;
+            
+            var select = $('#makeId').empty();
+            var seen = new Set();
+            if (obj.value !== "") {
+                select.append($('<option/>', {
+                    value: "",
+                    text: "-- Select Make --"
+                }));
+                
+                for (let i of model) {
+                    if (!seen.has(i.carBrand)) {
+                        if (obj.value === i.mainClassification) {
+                            seen.add(i.carBrand);
+                            select.append($('<option/>', {
+                               value: i.carBrand,
+                               text: i.carBrand 
+                            }));
+                        }
+                    }
+                }
+                
+                select.append($('<option/>', {
+                    value: "Other",
+                    text: "Other"
+                }));                
+            }
+            else {
+                globalSelectMake = "";
+                $('#makeId').empty();
+                
+                globalSelectModel = "";
+                $('#modelId').empty();
+                
+                globalSelectPackage = "";
+                $('#packageId').empty();
+                
+                globalSelectYear = "";
+                $('#yearId').empty();
+                
+                globalSelectId = "";
+            }
+        }
+        
+        function getMake(obj) {
+            $('#MiddleId').css('display', 'none');
+            globalSelectMake = obj.value;
+            
+            var select = $('#modelId').empty();
+            var seen = new Set();
+            if (obj.value !== "") {
+                
+                select.append($('<option/>', {
+                    value: "",
+                    text: "-- Select Model --"
+                }));
+                
+                for (let i of model) {
+                    if (!seen.has(i.carModel)) {
+                        if (obj.value === i.carBrand && i.mainClassification === globalSelectClassification) {
+                            seen.add(i.carModel);
+                            select.append($('<option/>', {
+                                value: i.carModel,
+                                text: i.carModel
+                            }));
+                        }
+                    }
+                }
+                
+                select.append($('<option/>', {
+                    value: "Other",
+                    text: "Other"
+                }));
+            }
+            else {
+                globalSelectModel = "";
+                $('#modelId').empty();
+                
+                globalSelectPackage = "";
+                $('#packageId').empty();
+                
+                globalSelectYear = "";
+                $('#yearId').empty();
+                
+                globalSelectId = "";
+            }
+        }
+        
+        function getModel(obj) {
+            $('#MiddleId').css('display', 'none');
+            globalSelectModel = obj.value;
+            
+            var select = $('#packageId').empty();
+            var seen = new Set();
+            if (obj.value !== "") {
+               select.append($('<option/>', {
+                   value: "",
+                   text: "-- Select Package --"
+               }));
+               
+               for (let i of model) {
+                   if (!seen.has(i.carPackage)) {
+                       if (obj.value === i.carModel && i.mainClassification === globalSelectClassification && i.carBrand === globalSelectMake) {
+                           seen.add(i.carPackage);
+                           select.append($('<option/>', {
+                               value: i.carPackage,
+                               text: i.carPackage
+                           }));
+                       }
+                   }
+               }
+               select.append($('<option/>', {
+                   value: "Other",
+                   text: "Other"
+               }));
+            }
+            else {
+                globalSelectPackage = "";
+                $('#packageId').empty();
+                
+                globalSelectYear = "";
+                $('#yearId').empty();
+                
+                globalSelectId = "";
+            }
+        }
+        
+        function getPackage(obj) {
+            $('#MiddleId').css('display', 'none');
+            globalSelectPackage = obj.value;
+            
+            var select = $('#yearId').empty();
+            var seen = new Set();
+            if (obj.value !== "") {
+                select.append($('<option/>', {
+                    value: "",
+                    text: "-- Select Year --"
+                }));
+                
+                for (let i of model) {
+                    if (!seen.has(i.carYear)) {
+                        if (obj.value === i.carPackage && i.mainClassification === globalSelectClassification && i.carBrand === globalSelectMake && i.carModel === globalSelectModel) {
+                            seen.add(i.carYear);
+                            select.append($('<option/>', {
+                                value: i.carYear,
+                                text: i.carYear
+                            }));
+                        }
+                    }
+                }
+                select.append($('<option/>', {
+                    value: "Other",
+                    text: "Other"
+                }));
+            }
+            else {
+                globalSelectYear = "";
+                $('#yearId').empty();
+                
+                globalSelectId = "";
+            }
+        }
+        
+        function getYearFinal(obj) {
+            globalSelectYear = obj.value;
+            
+            for (let i of model) {
+                if (i.mainClassification === globalSelectClassification && i.carBrand === globalSelectMake && i.carModel === globalSelectModel && i.carPackage === globalSelectPackage && i.carYear == globalSelectYear) {
+                    globalSelectId = i.id;
+                    $('#mainClassificationId').val(globalSelectId);
+                    $('#MiddleId').css('display', 'flex');
+                }
+            }
+        }
+        
+        function waitingToPost() {
+            if (globalSelectId === "") {
+                globalSelectClassification = ($('#classificationInputIdText').val() == "") ? globalSelectClassification : document.getElementById("classificationInputIdText").value.split(' ').map(function (word) { return word.replace(word[0], word[0].toUpperCase()); }).join(' ');
+                globalSelectMake = ($('#makeInputIdText').val() == "") ? globalSelectMake : document.getElementById("makeInputIdText").value.split(' ').map(function (word) { return word.replace(word[0], word[0].toUpperCase()); }).join(' ');
+                globalSelectModel = ($('#modelInputIdText').val() == "") ? globalSelectModel : document.getElementById("modelInputIdText").value.split(' ').map(function (word) { return word.replace(word[0], word[0].toUpperCase()); }).join(' ');
+                globalSelectPackage = ($('#packageInputIdText').val() == "") ? globalSelectPackage : document.getElementById("packageInputIdText").value.split(' ').map(function (word) { return word.replace(word[0], word[0].toUpperCase()); }).join(' ');
+                globalSelectYear = ($('#yearInputIdText').val() == "") ? globalSelectYear : $('#yearInputIdText').val();
+                
+                if (globalSelectClassification != "Other" && globalSelectMake != "Oher" && globalSelectModel != "Other" && globalSelectPackage != "Other" && globalSelectYear != "Other") {
+                     $.ajax({
+                         type: "POST",
+                         url: '@Url.Action("PostConfiguration", "MyCars")',
+                         data : {
+                             classification: globalSelectClassification,
+                             make: globalSelectMake,
+                             model: globalSelectModel,
+                             package: globalSelectPackage,
+                             year: globalSelectYear
+                         },
+                         dataType: "json",
+                         success: function (response) {
+                             globalSelectId = response.id;
+                             $('#mainClassificationId').val(globalSelectId);
+                             $('#MiddleId').css('display', 'flex');
+                         },
+                         error: function (jqXHR, textStatus, errorThrown) {
+                             console.log('Error: '+textStatus+' '+errorThrown);
+                             $('#MiddleId').css('display', 'none');
+                         }
+                     });                
+                }
+            }
+        }
+        
+        $('#classificationId').change(function () {
+            var inputDiv = document.getElementById('classificationInputId');
+            if ($(this).val() === "Other") {
+                $(this).css({
+                    "border-bottom-right-radius" : "0px",
+                    "border-bottom-left-radius" : "0px"
+                });
+                inputDiv.style.display = 'block';
+            }
+            else {
+                $(this).css({
+                    "border-bottom-right-radius" : "7px",
+                    "border-bottom-left-radius" : "7px"
+                });
+                inputDiv.style.display = 'none';
+            } 
+        });
+        
+        $('#makeId').change(function () {
+            var inputDiv = document.getElementById('makeInputId');
+            if ($(this).val() === "Other") {
+                $(this).css({
+                    "border-bottom-right-radius" : "0px",
+                    "border-bottom-left-radius" : "0px"
+                });
+                inputDiv.style.display = 'block';
+            }
+            else {
+                $(this).css({
+                    "border-bottom-right-radius" : "7px",
+                    "border-bottom-left-radius" : "7px"
+                });
+                inputDiv.style.display = 'none';
+            }
+        });
+        
+        $('#modelId').change(function () {
+            var inputDiv = document.getElementById('modelInputId');
+            if ($(this).val() === "Other") {
+                $(this).css({
+                    "border-bottom-right-radius" : "0px",
+                    "border-bottom-left-radius" : "0px"
+                });
+                inputDiv.style.display = 'block';
+            }
+            else {
+                $(this).css({
+                    "border-bottom-right-radius" : "7px",
+                    "border-bottom-left-radius" : "7px"
+                });
+                inputDiv.style.display = 'none';
+            }
+        });
+        
+        $('#packageId').change(function () {
+            var inputDiv = document.getElementById('packageInputId');
+            if ($(this).val() === "Other") {
+                $(this).css({
+                    "border-bottom-right-radius" : "0px",
+                    "border-bottom-left-radius" : "0px"
+                });
+                inputDiv.style.display = 'block';
+            }
+            else {
+                $(this).css({
+                    "border-bottom-right-radius" : "7px",
+                    "border-bottom-left-radius" : "7px"
+                });
+                inputDiv.style.display = 'none';
+            }
+        });        
+
+        $('#yearId').change(function () {
+            var inputDiv = document.getElementById('yearInputId');
+            if ($(this).val() === "Other") {
+                $(this).css({
+                    "border-bottom-right-radius" : "0px",
+                    "border-bottom-left-radius" : "0px"
+                });
+                inputDiv.style.display = 'block';
+            }
+            else {
+                $(this).css({
+                    "border-bottom-right-radius" : "7px",
+                    "border-bottom-left-radius" : "7px"
+                });
+                inputDiv.style.display = 'none';
+            }
+        });        
+    </script>
+
+    <script type="text/javascript">
+        function MiddleSendClick()  {
+            var deger;
+            
+            deger = document.getElementById('totalKm').value;
+            deger = deger.replace(/\./g, '');
+            document.getElementById('totalKm').value = deger;
+            
+            deger = document.getElementById('price').value;
+            deger = deger.replace(/\./g, '');
+            document.getElementById('price').value = deger;
+            
+            deger = document.getElementById('engineDisplacementId').value;
+            deger = deger.replace(/\./g, ',');
+            document.getElementById('engineDisplacementId').value = deger;
+        }  
+    </script>
+}

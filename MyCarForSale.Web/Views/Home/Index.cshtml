@@ -9,7 +9,7 @@
 
 <div class="container mx-auto flex flex-row justify-around">
     <div class="hidden md:flex flex-col relative">
-        <div class="max-h-[80vh] min-h-[80vh] rounded-lg bg-blue-500 sticky top-5 flex flex-col flex-nowrap justify-between">
+        <div class="max-h-[80vh] min-h-[80vh] w-72 rounded-lg bg-blue-500 sticky top-5 flex flex-col flex-nowrap justify-between">
             @*
             Side Panel
             *@
@@ -31,7 +31,7 @@
                 
                 <a asp-page='/@item'
                         style="padding-top: @(paddingY)rem; padding-bottom: @(paddingY)rem;"
-                        class="flex justify-center align-middle m-0 px-36 text-center text-white font-semibold text-lg rounded-lg  hover:bg-blue-600 hover:cursor-pointer">
+                        class="flex justify-center align-middle m-0 w-full text-center text-white font-semibold text-lg rounded-lg  hover:bg-blue-600 hover:cursor-pointer">
                     @item
                 </a>
             }
@@ -52,7 +52,7 @@
                 <th class="mx-auto py-2 px-10 whitespace-nowrap">Ad Title</th>
                 <th onclick="sortTable(3)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Price</th>
                 <th onclick="sortTable(4)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Horse Power</th>
-                <th onclick="sortTable(5)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Torque</th>
+                <th onclick="sortTable(5)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">KM</th>
                 <th onclick="sortTable(6)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Transmission</th>
                 <th onclick="sortTable(7)" class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-pointer">Year</th>
             </tr>
@@ -69,7 +69,7 @@
                         }
                         else
                         {
-                            <img src="https://img.freepik.com/free-photo/empty-parking-lot-parking-lane-outdoor-public-park_1127-3374.jpg" alt="car image"/>
+                            <img src="https://ik.imagekit.io/mycarforsale/BASEIMAGE.jpeg?updatedAt=1706283464011" alt="car image"/>
                         }
                     </td>
                     <td class="">
@@ -91,11 +91,11 @@
                             <div class="text-sm"> @item.MainClassificationEntityCarPackage</div>
                         </div>
                     </td>
-                    <td class="">@item.Price.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".")</td>
-                    <td class="">@item.EngineHorsePower.ToString()</td>
-                    <td class="">@item.EngineTorque.ToString()</td>
-                    <td class="">@item.TransmissionType</td>
-                    <td class="">@item.MainClassificationEntityCarYear</td>
+                    <td class="tracking-wide">@item.Price.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".")</td>
+                    <td class="tracking-wide">@item.EngineHorsePower.ToString()</td>
+                    <td class="tracking-wide">@item.CarTotalKm.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".")</td>
+                    <td class="tracking-wide">@item.TransmissionType</td>
+                    <td class="tracking-wide">@item.MainClassificationEntityCarYear</td>
                 </tr>
             }
             </tbody>
@@ -111,7 +111,8 @@
 {
     <script type="text/javascript">
         var pageIndex = 1;
-        var pageCount;
+        
+        console.log("Sayfaya girdi.");
         
         $(window).scroll(function () {
             if ($(window).scrollTop() === $(document).height() - $(window).height()) {
@@ -121,8 +122,7 @@
                 
         function GetRecords() {
             pageIndex++;
-            console.log("pageIndex : "+pageIndex+"  pageCount : "+pageCount);
-            if (pageIndex == 2 || pageIndex <= pageCount) {
+            if (pageIndex >= 2) {
                 $("#loader").show();
                 $.ajax({
                     type: "GET",
@@ -130,14 +130,14 @@
                     data: {"pageIndex": pageIndex},
                     dataType: "json",
                     success: function (data) {
-                        pageCount = data.infiniteScrollCount;
                         
-                        data.carFeatures.forEach(item => {                        
-                        var price = item.price;
-                        var formattedPrice = price.toLocaleString("tr-TR", {useGrouping: true});
-                        var priceResult = formattedPrice.replace(/,/g, ".");
-                        
-                        var dataHtml;
+                        data.carFeatures.forEach(item => {    
+                            var formattedKilometer = item.carTotalKm.toLocaleString("tr-TR", {useGrouping: true});
+                            var kilometerResult = formattedKilometer.replace(/,/g, ".");
+                            
+                            var formattedPrice = item.price.toLocaleString("tr-TR", {useGrouping: true});
+                            var priceResult = formattedPrice.replace(/,/g, ".");
+                            var dataHtml;
                         if (item.carImagesEntities.length !== 0) {
                             dataHtml = "<tr onclick='rowClick("+item.id+")' class='max-h-4 w-auto even:bg-blue-100 odd:bg-white hover:bg-blue-50 hover:cursor-pointer'>"+
                             "<td class='hidden'><a href='/Home/CarId/"+item.id+"' id='CarDetailsHref_"+item.id+"' class='decoration-0' asp-area='' asp-controller='Home' asp-action='CarId' asp-route-id="+item.id+">Giriş</a></td>"+
@@ -146,11 +146,11 @@
                                 "<span><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='16' height='16'><path d='M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z' fill='#4B5563' /></svg></span>"+
                                 "<div class='text-sm'> "+item.mainClassificationEntityCarModel+" </div><span><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='16' height='16'><path d='M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z' fill='#4B5563' /></svg></span>"+
                                 "<div class='text-sm'> "+item.mainClassificationEntityCarPackage+"</div></div></td>"+
-                            "<td>"+priceResult+"</td>"+
-                            "<td>"+item.engineHorsePower+"</td>"+
-                            "<td>"+item.engineTorque+"</td>"+
-                            "<td>"+item.transmissionType+"</td>"+
-                            "<td>"+item.mainClassificationEntityCarYear+"</td>"+
+                            "<td class='tracking-wide'>"+priceResult+"</td>"+
+                            "<td class='tracking-wide'>"+item.engineHorsePower+"</td>"+
+                            "<td class='tracking-wide'>"+kilometerResult+"</td>"+
+                            "<td class='tracking-wide'>"+item.transmissionType+"</td>"+
+                            "<td class='tracking-wide'>"+item.mainClassificationEntityCarYear+"</td>"+
                             "</tr>";    
                         } else {
                             dataHtml = "<tr onclick='rowClick("+item.id+")' class='max-h-4 w-auto even:bg-blue-100 odd:bg-white hover:bg-blue-50 hover:cursor-pointer'>"+
@@ -160,11 +160,11 @@
                                 "<span><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='16' height='16'><path d='M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z' fill='#4B5563' /></svg></span>"+
                                 "<div class='text-sm'> "+item.mainClassificationEntityCarModel+" </div><span><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' width='16' height='16'><path d='M33.094 32.004L17.374 5.004 27.374 5.004 49 32 27.374 59.004 17.374 59.004z' fill='#4B5563' /></svg></span>"+
                                 "<div class='text-sm'> "+item.mainClassificationEntityCarPackage+"</div></div></td>"+
-                            "<td>"+priceResult+"</td>"+
-                            "<td>"+item.engineHorsePower+"</td>"+
-                            "<td>"+item.engineTorque+"</td>"+
-                            "<td>"+item.transmissionType+"</td>"+
-                            "<td>"+item.mainClassificationEntityCarYear+"</td>"+
+                            "<td class='tracking-wide'>"+priceResult+"</td>"+
+                            "<td class='tracking-wide'>"+item.engineHorsePower+"</td>"+
+                            "<td class='tracking-wide'>"+kilometerResult+"</td>"+
+                            "<td class='tracking-wide'>"+item.transmissionType+"</td>"+
+                            "<td class='tracking-wide'>"+item.mainClassificationEntityCarYear+"</td>"+
                             "</tr>";
                         }
                             
@@ -199,7 +199,7 @@
             let bValue = b.cells[columnIndex].textContent;
     
             //Fiyat kısmındaki "." ları çıkarıp ayrıca karşılaştırmasını yaptım.
-            if (columnIndex === 3) {
+            if (columnIndex === 3 || columnIndex === 5) {
                 aValue = aValue.split('.').join("");
                 bValue = bValue.split('.').join("");
             }

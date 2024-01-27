@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<div class="grid grid-cols-3">
+    <div></div>
+    <div class="bg-gray-200 m-[9vh] flex items-center justify-center rounded-2xl">
+        <div id="drop-area" class="border-2 border-dashed border-gray-400 px-24 py-12 text-center rounded-2xl">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="256" height="256">
+                <path d="M11.375 4.03125C9.644531 4.085938 7.160156 4.734375 3.375 6.65625L4.28125 8.4375C8.433594 6.328125 10.789063 5.949219 11.9375 6.03125C12.511719 6.070313 12.789063 6.210938 12.9375 6.3125C12.976563 6.339844 12.976563 6.355469 13 6.375L13 9L10.90625 9C10.015625 9 9.175781 9.433594 8.65625 10.15625L6.625 13L4 13L4 15L5.1875 15L5.03125 15.21875C4.355469 16.164063 4 17.304688 4 18.46875L4 24C4 24.03125 4 24.0625 4 24.09375L4 26C4 26.550781 4.449219 27 5 27L8 27L8.5 25.5C8.859375 25.542969 9.230469 25.582031 9.625 25.625L9.71875 25.71875L9.78125 25.65625C11.605469 25.847656 13.710938 26 16 26C18.289063 26 20.394531 25.847656 22.21875 25.65625L22.28125 25.71875L22.375 25.625C22.769531 25.582031 23.140625 25.542969 23.5 25.5L24 27L27 27C27.550781 27 28 26.550781 28 26L28 24.125C28.003906 24.082031 28.003906 24.042969 28 24L28 18.46875C28 17.304688 27.644531 16.164063 26.96875 15.21875L26.8125 15L28 15L28 13L25.375 13L23.34375 10.15625C22.824219 9.433594 21.984375 9 21.09375 9L19 9L19 6.375C19.023438 6.355469 19.023438 6.339844 19.0625 6.3125C19.210938 6.210938 19.488281 6.070313 20.0625 6.03125C21.210938 5.949219 23.566406 6.328125 27.71875 8.4375L28.625 6.65625C24.300781 4.457031 21.6875 3.90625 19.9375 4.03125C19.0625 4.09375 18.394531 4.339844 17.9375 4.65625C17.480469 4.972656 17.191406 5.382813 17.15625 5.4375L17 5.6875L17 9L15 9L15 5.6875L14.84375 5.4375C14.808594 5.382813 14.519531 4.972656 14.0625 4.65625C13.605469 4.339844 12.9375 4.09375 12.0625 4.03125C11.84375 4.015625 11.621094 4.023438 11.375 4.03125 Z M 10.90625 11L21.09375 11C21.339844 11 21.574219 11.109375 21.71875 11.3125L22.9375 13L9.0625 13L10.28125 11.3125C10.425781 11.109375 10.660156 11 10.90625 11 Z M 7.65625 15L24.34375 15L25.0625 16C25.042969 16 25.019531 15.996094 25 16C21.8125 16.515625 22 17 22 17C22 17 22.339844 17.492188 22.9375 17.84375C23.28125 18.046875 23.710938 18.019531 24.03125 18C24.351563 17.980469 25.023438 17.925781 25.875 17.84375C25.90625 17.839844 25.910156 17.816406 25.9375 17.8125C25.976563 18.027344 26 18.25 26 18.46875L26 23.125C25.277344 23.238281 24.199219 23.378906 22.96875 23.53125L20.71875 21.28125L20.40625 21L11.59375 21L11.28125 21.28125L9.03125 23.53125C7.800781 23.378906 6.722656 23.238281 6 23.125L6 18.46875C6 18.25 6.023438 18.027344 6.0625 17.8125C6.089844 17.816406 6.09375 17.839844 6.125 17.84375C6.976563 17.925781 7.648438 17.980469 7.96875 18C8.289063 18.019531 8.71875 18.046875 9.0625 17.84375C9.660156 17.492188 10 17 10 17C10 17 10.1875 16.515625 7 16C6.980469 15.996094 6.957031 16 6.9375 16 Z M 11 17L11 19L21 19L21 17 Z M 12.4375 23L19.5625 23L20.375 23.8125C19.035156 23.921875 17.59375 24 16 24C14.40625 24 12.964844 23.921875 11.625 23.8125Z" fill="#FFFFFF"/>
+            </svg>
+            <div class="flex flex-col">
+                <p>Drag & drop your car photos.</p>
+                <br/>
+                <div class="flex flex-row justify-center items-center gap-5">
+                    <hr class="w-20 border-s border-solid border-gray-300"/>
+                    <p class="text-gray-500 font-semibold">OR</p>
+                    <hr class="w-20 border-s border-solid border-gray-300"/>
+                </div>
+            </div>
+            <input id="uploadImageButton" accept="image/heic, image/heif, image/jpeg" type="file" class="hidden"/>
+            <label id="labelButton" for="uploadImageButton" class="mt-5 py-3 px-12 rounded-xl bg-blue-600 text-white font-normal tracking-wide cursor-pointer inline-block">Select Photos</label>
+        </div>
+    </div>
+    <div class="flex items-center justify-center m-[20vh]">
+        <button id="finishButtonId" class="bg-blue-600 h-full w-full text-xl text-white tracking-wider rounded-3xl font-[500] border-2 border-dashed border-white">Finish</button>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+           var dropArea = $('#drop-area');
+           var button = $('#labelButton');
+           ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+              dropArea.on(eventName, preventDefaluts);
+           });
+           
+           $('#uploadImageButton').on('change', function () {
+               var files = this.files;
+               handleFiles(files);
+           });
+           
+           function preventDefaluts(e) {
+               e.preventDefault();
+               e.stopPropagation();
+           }
+           dropArea.on('dragenter', handleEnter);
+           dropArea.on('dragleave', handleLeave);
+           
+           dropArea.on('drop', handleDrop);
+           
+           function handleEnter(e) {
+               button.css("background","#cccccc")
+           }
+           
+           function handleLeave(e) {
+               button.css("background", "#2563EB")
+           }
+           
+           function handleDrop(e) {
+               var dt = e.originalEvent.dataTransfer;
+               var files = dt.files;
+               
+               handleFiles(files);
+           }
+           
+           function handleFiles(files) {
+               ([...files]).forEach(uploadFile);
+           }
+           
+           function uploadFile(file) {
+               var data = new FormData();
+               data.append('image', file);
+               
+               $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("PostImageUrl", "MyCars")',
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        Swal.fire({
+                            title: "Successful",
+                            text: "Your vehicle photo has been uploaded.",
+                            icon: 'success'
+                        });
+                        setTimeout(function(){
+                            swal.closeModal();
+                        }, 2000);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        Swal.fire({
+                            title: "Fail",
+                            text: "Your vehicle photo could not be uploaded.",
+                            icon: 'error'
+                        });
+                        setTimeout(function () {
+                            swal.closeModal();
+                        }, 2000);
+                    }
+               });
+           }
+           
+           $('#finishButtonId').on('click', function () {
+               
+               Swal.fire({
+                   title: "Getting Ready",
+                   text: "We make everything ready for you.",
+                   icon: 'success',
+                   showCancelButton: false,
+                   showConfirmButton: false
+               });
+               setTimeout(function(){
+                   swal.closeModal();
+                   window.location.href = '/Home/CarId/@TempData["carFeaturesEntityId"]';
+               }, 2500);
+           });
+        });
+    </script>
+}

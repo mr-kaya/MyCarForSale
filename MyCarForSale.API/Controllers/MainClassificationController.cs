@@ -39,7 +39,7 @@ public class MainClassificationController : CustomBaseController
     }
 
     [HttpPost]
-    [Authorize(Roles = "Root, Publisher")]
+    [Authorize]
     public async Task<IActionResult> Save(MainClassificationEntityDto mainClassificationEntityDto)
     {
         var classification = _mapper.Map<MainClassificationEntity>(mainClassificationEntityDto);

@@ -15,16 +15,14 @@ namespace MyCarForSale.Web.Controllers;
 public class UserController : Controller
 {
     public static string? TokenKey;
-    private readonly HttpClient _httpClient;
     private readonly ILogger<UserController> _logger;
     private readonly IValidator<UserAccountEntityDto> _validator;
     private readonly UserAccountService _userAccountService;
 
-    public UserController(ILogger<UserController> logger, UserAccountService userAccountService, HttpClient httpClient, IValidator<UserAccountEntityDto> validator)
+    public UserController(ILogger<UserController> logger, UserAccountService userAccountService, IValidator<UserAccountEntityDto> validator)
     {
         _logger = logger;
         _userAccountService = userAccountService;
-        _httpClient = httpClient;
         _validator = validator;
     }
     

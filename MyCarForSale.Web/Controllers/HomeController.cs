@@ -1,10 +1,18 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using MyCarForSale.Core.DTOs;
 using MyCarForSale.Web.Models;
 using MyCarForSale.Web.Services;
 
 namespace MyCarForSale.Web.Controllers;
+
+public class MainPageFilterVariable
+{
+    public List<string> carClassification { get; set; }
+    public int  pageIndex { get; set; }
+    public int pageSize { get; set; }
+}
 
 public class MyViewModel
 {
@@ -16,7 +24,8 @@ public class MyViewModel
 
 public class HomeController : Controller
 {
-    private const int PageSize = 3;
+    private static List<string> ClassificationMenuItemsList = new();
+    private const int PageSize = 7;
     private static int _infiniteScrollCount;
     
     private readonly ILogger<HomeController> _logger;
@@ -33,30 +42,125 @@ public class HomeController : Controller
         return View();
     }
     
+    [ResponseCache(NoStore = true, Duration = 0)]
     public async Task<IActionResult> Index()
     {
+        var page = Request.Query["page"].ToString();
+        page = System.Net.WebUtility.UrlDecode(page);
+        page = page.TrimStart('/');
+        
+        MainPageFilterVariable model = new()
+        {
+            carClassification = ClassificationMenuItemsList,
+            pageIndex = 1,
+            pageSize = PageSize
+        };
+        
+        if (ClassificationMenuItemsList != null)
+        {
+            if (page != "")
+            {
+                ClassificationMenuItemsList.Add(page);
+                
+                var i = ClassificationMenuItemsList.IndexOf(page);
+
+                for (int k = i + 1; k < ClassificationMenuItemsList.Count;)
+                {
+                    ClassificationMenuItemsList.RemoveAt(k);
+                }
+            }
+            else
+            {
+                ClassificationMenuItemsList.Clear();
+            }
+        }
+        
         var getAllData = await _carFeaturesService.AllSaleCarsAsync();
-        var firstPage = await _carFeaturesService.GetSalePageWithId(1, PageSize);
+        var firstPage = await _carFeaturesService.GetSalePageWithId(model);
         var classification = await _carFeaturesService.AllClassificationAsync();
         
         _infiniteScrollCount = (getAllData.Count / PageSize) + 1;
         
         Random random = new Random();
-        
-        for (int i = 0; i < firstPage.Count; i++)
+
+        if (ClassificationMenuItemsList.Count == 0)
         {
-            int randomIndex = random.Next(firstPage.Count());
-            (firstPage[i], firstPage[randomIndex]) = (firstPage[randomIndex], firstPage[i]);
+            for (int i = 0; i < firstPage.Count; i++)
+            {
+                int randomIndex = random.Next(firstPage.Count());
+                (firstPage[i], firstPage[randomIndex]) = (firstPage[randomIndex], firstPage[i]);
+            }
         }
     
         List<string> classificationList = new List<string>();
-        foreach (var item in classification)
+        
+        
+        if (ClassificationMenuItemsList.Count == 0)
         {
-            int index = classificationList.FindIndex(a => a.Contains(item.MainClassification));
-            if (index == -1) 
+            foreach (var item in classification)
             {
-                classificationList.Add(item.MainClassification);
+                int index = classificationList.FindIndex(a => a.Contains(item.MainClassification));
+                if (index == -1) 
+                {
+                    classificationList.Add(item.MainClassification);
+                }
             }
+        }
+        else if (ClassificationMenuItemsList.Count == 1)
+        {
+            foreach (var item in classification)
+            {
+                if (item.MainClassification == ClassificationMenuItemsList[^1])
+                {
+                    int index = classificationList.FindIndex(a => a.Contains(item.CarBrand));
+                    if (index == -1) 
+                    {
+                        classificationList.Add(item.CarBrand);
+                    }
+                }   
+            }
+        }
+        else if (ClassificationMenuItemsList.Count == 2)
+        {
+            foreach (var item in classification)
+            {
+                if (item.CarBrand == ClassificationMenuItemsList[^1] && item.MainClassification == ClassificationMenuItemsList[^2])
+                {
+                    int index = classificationList.FindIndex(a => a.Contains(item.CarModel));
+                    if (index == -1) 
+                    {
+                        classificationList.Add(item.CarModel);
+                    }   
+                }
+            }
+        }
+        else if (ClassificationMenuItemsList.Count == 3)
+        {
+            foreach (var item in classification)
+            {
+                if (item.CarModel == ClassificationMenuItemsList[^1] && item.CarBrand == ClassificationMenuItemsList[^2] && item.MainClassification == ClassificationMenuItemsList[^3])
+                {
+                    int index = classificationList.FindIndex(a => a.Contains(item.CarPackage));
+                    if (index == -1) 
+                    {
+                        classificationList.Add(item.CarPackage);
+                    }   
+                }
+            }
+        }
+        else if (ClassificationMenuItemsList.Count == 4)
+        {
+            foreach (var item in classification)
+            {
+                if (item.CarPackage == ClassificationMenuItemsList[^1] && item.CarModel == ClassificationMenuItemsList[^2] && item.CarBrand == ClassificationMenuItemsList[^3] && item.MainClassification == ClassificationMenuItemsList[^4])
+                {
+                    int index = classificationList.FindIndex(a => a.Contains(item.CarYear.ToString()));
+                    if (index == -1) 
+                    {
+                        classificationList.Add(item.CarYear.ToString());
+                    }   
+                }
+            }   
         }
 
         var myViewModel = new MyViewModel
@@ -73,7 +177,14 @@ public class HomeController : Controller
      */
     public async Task<IActionResult> LoadMorePage(int pageIndex)
     {
-        var getPageData = await _carFeaturesService.GetSalePageWithId(pageIndex, PageSize);
+        MainPageFilterVariable model = new()
+        {
+            carClassification = ClassificationMenuItemsList,
+            pageIndex = pageIndex,
+            pageSize = PageSize
+        };
+        
+        var getPageData = await _carFeaturesService.GetSalePageWithId(model);
         var classification = await _carFeaturesService.AllClassificationAsync();
         
         
@@ -95,11 +206,6 @@ public class HomeController : Controller
         };
         
         return Json(myViewModel);
-    }
-
-    public async Task<IActionResult> ChangeMainMenu(string selectedOption)
-    {
-        
     }
 
     /*

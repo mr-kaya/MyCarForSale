@@ -25,15 +25,15 @@
 
         <div class="grid grid-cols-2 gap-4 h-auto rounded-lg bg-gray-200 p-5 mb-5">
             <div class="font-semibold">Phone:</div>
-            <div>@Model.UserAccountEntityPhoneNumber</div>
+            <div class="tracking-wide">@Model.UserAccountEntityPhoneNumber</div>
             <div class="font-semibold">Country:</div>
-            <div>@Model.UserAccountEntityCountry</div>
+            <div class="tracking-wide">@Model.UserAccountEntityCountry</div>
             <div class="font-semibold">Province:</div>
-            <div>@Model.UserAccountEntityProvince</div>
+            <div class="tracking-wide">@Model.UserAccountEntityProvince</div>
             <div class="font-semibold">District:</div>
-            <div>@Model.UserAccountEntityDistrict</div>
+            <div class="tracking-wide">@Model.UserAccountEntityDistrict</div>
             <div class="font-semibold">Zip Code:</div>
-            <div>@Model.UserAccountEntityZipCode</div>
+            <div class="tracking-wide">@Model.UserAccountEntityZipCode</div>
         </div>
         <div class="mb-5">
             @if (UserController.TokenKey != null)
@@ -49,7 +49,7 @@
                                 </svg>
                             </div>
                         </div>
-                        <div class="h-full col-span-2 flex justify-start items-center">Add Favorites</div>
+                        <div class="h-full col-span-2 flex justify-start items-center tracking-wide">Add Favorites</div>
                     </button>
                 </form>
             }
@@ -64,13 +64,13 @@
                             </svg>
                         </div>
                     </div>
-                    <div class="h-full col-span-2 flex justify-start items-center">Add Favorites</div>
+                    <div class="h-full col-span-2 flex justify-start items-center tracking-wide">Add Favorites</div>
                 </a>
             }
         </div>
         <div class="rounded-lg p-2 bg-white  shadow-[0px_0px_5px_5px] shadow-gray-500/20 mb-5">
             <button id="baseButton" onclick="baseButtonClick()" class="h-14 rounded-lg flex items-center justify-between border-none w-full p-4 text-black cursor-pointer text-lg font-semibold">
-                <span>Base</span>
+                <span class="tracking-wide">Base</span>
                 <span>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="32" height="32">
                         <path d="M57.236 18.127L32 40.41 6.764 18.127 4.036 21.051 29.953 46.604 32 48.622 34.047 46.604 59.964 21.051z" fill="#000000"/>
@@ -79,25 +79,25 @@
             </button>
             <div id="baseButtonDiv" style="display: none;" class="origin-top-right right-0 mt-2 rounded-lg">
                 <div class="grid grid-cols-2 gap-4 text-black text-sm">
-                    <div class="font-semibold text-end">Category:</div>
-                    <div>@Model.MainClassificationEntityMainClassification</div>
-                    <div class="font-semibold text-end">Brand:</div>
-                    <div>@Model.MainClassificationEntityCarBrand</div>
-                    <div class="font-semibold text-end">Model:</div>
-                    <div>@Model.MainClassificationEntityCarModel</div>
-                    <div class="font-semibold text-end">Package:</div>
-                    <div>@Model.MainClassificationEntityCarPackage</div>
-                    <div class="font-semibold text-end">Year:</div>
-                    <div>@Model.MainClassificationEntityCarYear</div>
-                    <div class="font-semibold text-end">Km:</div>
-                    <div>@Model.CarTotalKm.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".")</div>
+                    <div class="tracking-wide font-semibold text-end">Category:</div>
+                    <div class="tracking-wide">@Model.MainClassificationEntityMainClassification</div>
+                    <div class="tracking-wide font-semibold text-end">Brand:</div>
+                    <div class="tracking-wide">@Model.MainClassificationEntityCarBrand</div>
+                    <div class="tracking-wide font-semibold text-end">Model:</div>
+                    <div class="tracking-wide">@Model.MainClassificationEntityCarModel</div>
+                    <div class="tracking-wide font-semibold text-end">Package:</div>
+                    <div class="tracking-wide">@Model.MainClassificationEntityCarPackage</div>
+                    <div class="tracking-wide font-semibold text-end">Year:</div>
+                    <div class="tracking-wide">@Model.MainClassificationEntityCarYear</div>
+                    <div class="tracking-wide font-semibold text-end">Km:</div>
+                    <div class="tracking-wide">@Model.CarTotalKm.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".")</div>
                 </div>
             </div>
         </div>
 
         <div class="rounded-lg p-2 bg-white  shadow-[0px_0px_5px_5px] shadow-gray-500/20 mb-5">
             <button id="detailsButton" onclick="detailsButtonClick()" class="h-14 rounded-lg flex items-center justify-between border-none w-full p-4 text-black cursor-pointer text-lg font-semibold">
-                <span>Details</span>
+                <span class="tracking-wide">Details</span>
                 <span>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="32" height="32">
                         <path d="M57.236 18.127L32 40.41 6.764 18.127 4.036 21.051 29.953 46.604 32 48.622 34.047 46.604 59.964 21.051z" fill="#000000"/>
@@ -106,16 +106,16 @@
             </button>
             <div id="detailsButtonDiv" style="display: none;" class="origin-top-right right-0 mt-2 rounded-lg">
                 <div class="grid grid-cols-2 gap-4 text-black text-sm">
-                    <div class="font-semibold text-end">Capacity:</div>
-                    <div>@Model.EngineDisplacement</div>
-                    <div class="font-semibold text-end">Power:</div>
-                    <div>@Model.EngineHorsePower</div>
-                    <div class="font-semibold text-end">Torque:</div>
-                    <div>@Model.EngineTorque</div>
-                    <div class="font-semibold text-end">Drivetrain:</div>
-                    <div>@Model.CarDrivetrain</div>
-                    <div class="font-semibold text-end">Transmission:</div>
-                    <div>@Model.TransmissionType</div>
+                    <div class="tracking-wide font-semibold text-end">Displacement:</div>
+                    <div class="tracking-wide">@(Model.EngineDisplacement.ToString(CultureInfo.CurrentCulture).Contains(',') ? Model.EngineDisplacement.ToString(CultureInfo.CurrentCulture).Replace(",", ".") : Model.EngineDisplacement + ".0")</div>
+                    <div class="tracking-wide font-semibold text-end">Power:</div>
+                    <div class="tracking-wide">@Model.EngineHorsePower</div>
+                    <div class="tracking-wide font-semibold text-end">Torque:</div>
+                    <div class="tracking-wide">@Model.EngineTorque</div>
+                    <div class="tracking-wide font-semibold text-end">Drivetrain:</div>
+                    <div class="tracking-wide">@Model.CarDrivetrain</div>
+                    <div class="tracking-wide font-semibold text-end">Transmission:</div>
+                    <div class="tracking-wide">@Model.TransmissionType</div>
                 </div>
             </div>
         </div>
@@ -134,7 +134,7 @@
             else
             {
                 <section class="snap-start mb-5 flex mx-auto justify-center w-4/5">
-                    <img class="rounded-lg shadow-md shadow-black" src="https://img.freepik.com/free-photo/empty-parking-lot-parking-lane-outdoor-public-park_1127-3374.jpg" alt="Image could not be loaded."/>
+                    <img class="rounded-lg shadow-md shadow-black" src="https://ik.imagekit.io/mycarforsale/BASEIMAGE.jpeg?updatedAt=1706283464011" alt="Image could not be loaded."/>
                 </section>
             }
         </main>
@@ -143,7 +143,7 @@
                 <div class="col-span-4 h-14 flex justify-between items-center rounded-l-xl text-l tracking-wide font-bold px-5">
                     <div class="flex items-center">
                         <div class="text-blue-700 text-4xl">#</div>
-                        <div> @Model.AdvertisementName</div>
+                        <div class="tracking-wide"> @Model.AdvertisementName</div>
                     </div>
                     <div class="">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="32" height="32">
@@ -152,7 +152,7 @@
                     </div>
                 </div>
                 <div class="col-span-2 h-14 rounded-r-xl">
-                    <div class="h-full flex justify-center items-center bg-yellow-500 rounded-lg text-2xl font-bold">@Model.Price.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".") TL</div>
+                    <div class="h-full flex justify-center items-center bg-yellow-500 rounded-lg text-2xl font-bold tracking-wide">@Model.Price.ToString("#,#", CultureInfo.InvariantCulture).Replace(",", ".") TL</div>
                 </div>
             </button>
             <div id="advertisementButtonDiv" style="display: none;" class="origin-top-right right-0 rounded-lg m-5">

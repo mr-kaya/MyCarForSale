@@ -19,7 +19,7 @@ public class CarFeaturesEntityDtoValidator : AbstractValidator<CarFeaturesEntity
         List<string> drivetrainList = new List<string>() {"Front","Back","FourMotion"};
         RuleFor(x => x.CarDrivetrain).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
             .WithMessage("{PropertyName} alanı boş bırakılamaz.")
-            .Must(x => x.All(y => drivetrainList.Contains(y.ToString())))
+            .Must(x => drivetrainList.Contains(x.ToString()))
             .WithMessage("Girilen değer, listede bulunamadı!");
         
         RuleFor(x => x.EngineHorsePower).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
@@ -36,13 +36,13 @@ public class CarFeaturesEntityDtoValidator : AbstractValidator<CarFeaturesEntity
 
         List<string> fuelTypeList = new List<string>() { "Gasoline", "Diesel", "LPG", "Electric", "Hybrid", "Hydrogen" };
         RuleFor(x => x.EngineFuelType).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
-            .WithMessage("{PropertyName} alanı boş bırakılamaz.").Must(x => x.All(y => fuelTypeList.Contains(y.ToString())))
+            .WithMessage("{PropertyName} alanı boş bırakılamaz.").Must(x => fuelTypeList.Contains(x.ToString()))
             .WithMessage("Girilen değer, listede bulunamadı!");
         
-        List<string> transmissionList = new List<string>() { "Manuel", "Automatic", "Semi-Automatic", "CVT", "DCT" };
+        List<string> transmissionList = new List<string>() { "Manuel", "Automatic", "Semi-Automatic" };
         RuleFor(x => x.TransmissionType).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
             .WithMessage("{PropertyName} alanı boş bırakılamaz.")
-            .Must(x => x.All(y => transmissionList.Contains(y.ToString())))
+            .Must(x => transmissionList.Contains(x.ToString()))
             .WithMessage("Girilen değer, listede bulunamadı!");
         RuleFor(x => x.CarTotalKm).NotNull().WithMessage("{PropertyName} alanı boş bırakılamaz.").NotEmpty()
             .WithMessage("{PropertyName} alanı boş bırakılamaz.").Must(x => int.TryParse(x.ToString(), out _))

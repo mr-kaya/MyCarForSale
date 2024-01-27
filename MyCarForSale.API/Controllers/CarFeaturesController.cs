@@ -6,6 +6,13 @@ using MyCarForSale.Core.Services;
 
 namespace MyCarForSale.API.Controllers;
 
+public class MainPageFilterVariable
+{
+    public List<string> carClassification { get; set; }
+    public int  pageIndex { get; set; }
+    public int pageSize { get; set; }
+}
+
 public class CarFeaturesController : CustomBaseController
 {
     private readonly IMapper _mapper;
@@ -19,58 +26,51 @@ public class CarFeaturesController : CustomBaseController
         _carFeaturesService = carFeaturesService;
     }
 
-    [HttpGet("[action]")]
-    public async Task<IActionResult> GetSaleByPageId(int pageIndex, int pageSize)
-    {
-        var items = await _carFeaturesService.GetCarPageWithId(pageIndex, pageSize);
-        var itemsDto = _mapper.Map<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>(items);
-        return CreateActionResult(CustomResponseDto<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>.Success(200, itemsDto));
-    }
-
     [HttpPost("[action]")]
-    public async Task<IActionResult> GetFindClassification(string[] carClassification)
+    public async Task<IActionResult> GetSaleByPageId([FromBody] MainPageFilterVariable model)
     {
-        IQueryable<CarFeaturesEntity> data;
+        IEnumerable<CarFeaturesWithImageAndClassificationAndUserAccountDto>? data = null;
         
-        if (carClassification.Length == 1)
+        switch (model.carClassification.Count)
         {
-            data = _service.Where(entity =>
-                entity.MainClassificationEntity!.MainClassification == carClassification[0]);
+            case 0:
+                data = await _carFeaturesService.GetCarPageWithId(model.pageIndex, model.pageSize);
+                break;
+            case 1:
+                data = await _carFeaturesService.GetCarListWhere(
+                    entity => entity.MainClassificationEntity!.MainClassification == model.carClassification[0], model.pageIndex,
+                    model.pageSize);
+                break;
+            case 2:
+                data = await _carFeaturesService.GetCarListWhere(entity =>
+                    entity.MainClassificationEntity!.MainClassification == model.carClassification[0] &&
+                    entity.MainClassificationEntity.CarBrand == model.carClassification[1], model.pageIndex, model.pageSize);
+                break;
+            case 3: 
+                data = await _carFeaturesService.GetCarListWhere(entity =>
+                    entity.MainClassificationEntity!.MainClassification == model.carClassification[0] &&
+                    entity.MainClassificationEntity.CarBrand == model.carClassification[1] &&
+                    entity.MainClassificationEntity.CarModel == model.carClassification[2], model.pageIndex, model.pageSize);
+                break;
+            case 4:
+                data = await _carFeaturesService.GetCarListWhere(entity =>
+                    entity.MainClassificationEntity!.MainClassification == model.carClassification[0] &&
+                    entity.MainClassificationEntity.CarBrand == model.carClassification[1] &&
+                    entity.MainClassificationEntity.CarModel == model.carClassification[2] &&
+                    entity.MainClassificationEntity.CarPackage == model.carClassification[3], model.pageIndex, model.pageSize);
+                break;
+            default:
+                data = await _carFeaturesService.GetCarListWhere(entity =>
+                    entity.MainClassificationEntity!.MainClassification == model.carClassification[0] &&
+                    entity.MainClassificationEntity.CarBrand == model.carClassification[1] &&
+                    entity.MainClassificationEntity.CarModel == model.carClassification[2] &&
+                    entity.MainClassificationEntity.CarPackage == model.carClassification[3] &&
+                    entity.MainClassificationEntity.CarYear == ushort.Parse(model.carClassification[4]), model.pageIndex, model.pageSize);
+                break;
         }
-        else if (carClassification.Length == 2)
-        {
-            data = _service.Where(entity =>
-                entity.MainClassificationEntity!.MainClassification == carClassification[0] &&
-                entity.MainClassificationEntity.CarBrand == carClassification[1]);
-        }
-        else if (carClassification.Length == 3)
-        {
-            data = _service.Where(entity =>
-                entity.MainClassificationEntity!.MainClassification == carClassification[0] &&
-                entity.MainClassificationEntity.CarBrand == carClassification[1] &&
-                entity.MainClassificationEntity.CarModel == carClassification[2]);
-        }
-        else if(carClassification.Length == 4)
-        {
-            data = _service.Where(entity =>
-                entity.MainClassificationEntity!.MainClassification == carClassification[0] &&
-                entity.MainClassificationEntity.CarBrand == carClassification[1] &&
-                entity.MainClassificationEntity.CarModel == carClassification[2] &&
-                entity.MainClassificationEntity.CarPackage == carClassification[3]);
-        }
-        else
-        {
-            data = _service.Where(entity =>
-                entity.MainClassificationEntity!.MainClassification == carClassification[0] &&
-                entity.MainClassificationEntity.CarBrand == carClassification[1] &&
-                entity.MainClassificationEntity.CarModel == carClassification[2] &&
-                entity.MainClassificationEntity.CarPackage == carClassification[3] &&
-                entity.MainClassificationEntity.CarYear == ushort.Parse(carClassification[4]));
-        }
-
-        var dataDto = _mapper.Map<List<CarFeaturesEntityDto>>(data);
         
-        return CreateActionResult(CustomResponseDto<List<CarFeaturesEntityDto>>.Success(200, dataDto));
+        var itemsDto = _mapper.Map<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>(data);
+        return CreateActionResult(CustomResponseDto<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>>.Success(200, itemsDto));
     }
     
     [HttpGet("[action]/{id}")]
