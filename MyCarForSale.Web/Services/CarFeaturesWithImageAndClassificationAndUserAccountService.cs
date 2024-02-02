@@ -93,4 +93,16 @@ public class CarFeaturesWithImageAndClassificationAndUserAccountService
         var response = await _httpClient.DeleteAsync($"CarFeatures/{id}");
         return response.IsSuccessStatusCode;
     }
+
+    public async Task<List<CarFeaturesEntityDto>> SearchCarFeaturesDto(string data)
+    {
+        if (!string.IsNullOrEmpty(data))
+        {
+            var response =
+                await _httpClient.GetFromJsonAsync<CustomResponseDto<List<CarFeaturesEntityDto>>>($"CarFeatures/Search?data={data}");
+            return response.Data;
+        }
+
+        return null;
+    }
 }

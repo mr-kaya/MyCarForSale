@@ -5,7 +5,7 @@
 @{
     ViewBag.Title = "title";
     Layout = "_Layout";
-    
+
     var carFeaturesAllIds = Model?.ToList();
     var json = Json.Serialize(carFeaturesAllIds);
 }
@@ -33,7 +33,7 @@
             {
                 <tr onclick="rowClick('@item.Id', event)" class="h-4 w-auto even:bg-blue-100 odd:bg-white hover:bg-blue-50 hover:cursor-pointer">
                     <td class="hidden">
-                        <a id="carEditHref_@item.Id" class="decoration-0" asp-area="" asp-controller="" asp-action="">Düzenle</a>
+                        <a id="CarEditHref_@item.Id" class="decoration-0" asp-area="" asp-controller="MyCars" asp-action="EditCarPage" asp-route-id="@item.Id">Düzenle</a>
                         <a id="CarDeleteHref_@item.Id" class="decoration-0" asp-area="" asp-controller="MyCars" asp-action="DeleteCarOnListPage" asp-route-carId="@item.Id" asp-route-userId="@item.UserAccountEntityId">Sil</a>
                         <a id="CarDetailsHref_@item.Id" class=" decoration-0" asp-area="" asp-controller="Home" asp-action="CarId" asp-route-id="@item.Id">Giriş</a>
                     </td>
@@ -77,15 +77,15 @@
                     <td class="">@item.MainClassificationEntityCarYear</td>
                     <td class="">
                         <button class="">
-                            <svg id="edit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="48" height="48">
-                                <path d="M2.8125 0C1.269531 0 0 1.269531 0 2.8125L0 7L44 7L44 2.8125C44 1.269531 42.730469 0 41.1875 0 Z M 0 9L0 40C0 40.554688 0.449219 41 1 41L28.1875 41L26.90625 42.28125C26.785156 42.402344 26.671875 42.554688 26.625 42.71875L24.9375 48.71875C24.839844 49.066406 24.933594 49.429688 25.1875 49.6875C25.378906 49.882813 25.640625 50 25.90625 50C25.992188 50 26.070313 49.992188 26.15625 49.96875L32.15625 48.375C32.324219 48.328125 32.46875 48.21875 32.59375 48.09375L48.40625 32.40625C48.507813 32.308594 48.574219 32.183594 48.625 32.0625L48.8125 31.90625C50.414063 30.304688 50.414063 27.695313 48.8125 26.09375C47.511719 24.792969 45.546875 24.5625 44 25.375L44 9 Z M 7 15L11 15L11 17L7 17 Z M 14 15L37 15L37 17L14 17 Z M 7 20L11 20L11 22L7 22 Z M 14 20L37 20L37 22L14 22 Z M 7 25L11 25L11 27L7 27 Z M 14 25L37 25L37 27L14 27 Z M 43.75 28.25L46.75 31.25L31.375 46.5L28.46875 43.65625L28.5 43.53125 Z M 7 30L11 30L11 32L7 32 Z M 14 30L33 30L33 32L14 32Z" fill="#FFAE00" />
+                            <svg id="edit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                                <path d="M6 2C4.9 2 4 2.9 4 4L4 20C4 21.1 4.9 22 6 22L17.171875 22L13 17.828125L13 13L17.828125 13L20 15.171875L20 8L14 2L6 2 z M 15 15L15 17L20.146484 22.146484L22.146484 20.146484L17 15L15 15 z M 22.853516 20.853516L20.853516 22.853516L21.853516 23.853516C22.048516 24.048516 22.365547 24.048516 22.560547 23.853516L23.853516 22.560547C24.048516 22.364547 24.048516 22.048516 23.853516 21.853516L22.853516 20.853516 z" fill="#FFAE00"/>
                             </svg>
                         </button>
                     </td>
                     <td class="">
                         <button class="">
                             <svg id="delete" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
-                                <path d="M10 2L9 3L3 3L3 5L21 5L21 3L15 3L14 2L10 2 z M 4.3652344 7L5.8925781 20.263672C6.0245781 21.253672 6.877 22 7.875 22L16.123047 22C17.121047 22 17.974422 21.254859 18.107422 20.255859L19.634766 7L4.3652344 7 z" fill="#FF0000" />
+                                <path d="M10 2L9 3L3 3L3 5L21 5L21 3L15 3L14 2L10 2 z M 4.3652344 7L5.8925781 20.263672C6.0245781 21.253672 6.877 22 7.875 22L16.123047 22C17.121047 22 17.974422 21.254859 18.107422 20.255859L19.634766 7L4.3652344 7 z" fill="#FF0000"/>
                             </svg>
                         </button>
                     </td>
@@ -102,15 +102,16 @@ else
     <table class="blur-[3px]">
     <caption></caption>
     <thead>
-    <tr class="bg-blue-200">
-        <th class="rounded-tl-xl mx-auto py-2 px-24 whitespace-nowrap"></th>
-        <th class="mx-auto py-2 px-10 whitespace-nowrap">Ad Title</th>
-        <th class="mx-auto py-2 px-8 whitespace-nowrap">Price</th>
-        <th class="mx-auto py-2 px-8 whitespace-nowrap">Horse Power</th>
-        <th class="mx-auto py-2 px-8 whitespace-nowrap">Torque</th>
-        <th class="mx-auto py-2 px-8 whitespace-nowrap">Transmission</th>
-        <th class="mx-auto py-2 px-8 whitespace-nowrap">Year</th>
-        <th class="rounded-tr-xl mx-auto py-2 px-8 whitespace-normal">Favorite</th>
+    <tr class="bg-blue-200 hover:cursor-default">
+        <th class="rounded-tl-xl mx-auto py-2 px-24 whitespace-nowrap hover:cursor-default"></th>
+        <th class="mx-auto py-2 px-10 whitespace-nowrap hover:cursor-default">Ad Title</th>
+        <th class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-default">Price</th>
+        <th class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-default">Horse Power</th>
+        <th class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-default">Torque</th>
+        <th class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-default">Transmission</th>
+        <th class="mx-auto py-2 px-8 whitespace-nowrap hover:cursor-default">Year</th>
+        <th class="mx-auto py-2 px-12 whitespace-normal bg-yellow-500 hover:cursor-default">Edit</th>
+        <th class="mx-auto py-2 px-12 whitespace-normal bg-red-500 hover:cursor-default">Delete</th>
     </tr>
     </thead>
     <tbody>
@@ -143,10 +144,16 @@ else
         <td class="">Automatic</td>
         <td class="">2022</td>
         <td class="">
-            <div class="flex mx-auto justify-center">
+            <div class="flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
-                    <path d="M12 16.026L7.675 18.637 8.823 13.717 5 10.405 10.029 9.978 12 5.327 13.971 9.978 19 10.405 15.177 13.717 16.325 18.637z" opacity=".3" fill="#FFA200" />
-                    <path d="M23.053,9.002l-7.947-0.674L12,1L8.894,8.328L0.947,9.002l6.035,5.228L5.169,22L12,17.877L18.831,22l-1.813-7.77L23.053,9.002z M12,15.541l-3.806,2.297l1.01-4.33L5.84,10.594l4.425-0.375L12,6.125l1.735,4.094l4.425,0.375l-3.364,2.915l1.01,4.33L12,15.541z" fill="#FEC50E" />
+                    <path d="M6 2C4.9 2 4 2.9 4 4L4 20C4 21.1 4.9 22 6 22L17.171875 22L13 17.828125L13 13L17.828125 13L20 15.171875L20 8L14 2L6 2 z M 15 15L15 17L20.146484 22.146484L22.146484 20.146484L17 15L15 15 z M 22.853516 20.853516L20.853516 22.853516L21.853516 23.853516C22.048516 24.048516 22.365547 24.048516 22.560547 23.853516L23.853516 22.560547C24.048516 22.364547 24.048516 22.048516 23.853516 21.853516L22.853516 20.853516 z" fill="#FFAE00"/>
+                </svg>
+            </div>
+        </td>
+        <td class="">
+            <div class="flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                    <path d="M10 2L9 3L3 3L3 5L21 5L21 3L15 3L14 2L10 2 z M 4.3652344 7L5.8925781 20.263672C6.0245781 21.253672 6.877 22 7.875 22L16.123047 22C17.121047 22 17.974422 21.254859 18.107422 20.255859L19.634766 7L4.3652344 7 z" fill="#FF0000"/>
                 </svg>
             </div>
         </td>
@@ -180,10 +187,16 @@ else
         <td class="">Automatic</td>
         <td class="">2023</td>
         <td class="">
-            <div class="flex mx-auto justify-center">
+            <div class="flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
-                    <path d="M12 16.026L7.675 18.637 8.823 13.717 5 10.405 10.029 9.978 12 5.327 13.971 9.978 19 10.405 15.177 13.717 16.325 18.637z" opacity=".3" fill="#FFA200"/>
-                    <path d="M23.053,9.002l-7.947-0.674L12,1L8.894,8.328L0.947,9.002l6.035,5.228L5.169,22L12,17.877L18.831,22l-1.813-7.77L23.053,9.002z M12,15.541l-3.806,2.297l1.01-4.33L5.84,10.594l4.425-0.375L12,6.125l1.735,4.094l4.425,0.375l-3.364,2.915l1.01,4.33L12,15.541z" fill="#FEC50E"/>
+                    <path d="M6 2C4.9 2 4 2.9 4 4L4 20C4 21.1 4.9 22 6 22L17.171875 22L13 17.828125L13 13L17.828125 13L20 15.171875L20 8L14 2L6 2 z M 15 15L15 17L20.146484 22.146484L22.146484 20.146484L17 15L15 15 z M 22.853516 20.853516L20.853516 22.853516L21.853516 23.853516C22.048516 24.048516 22.365547 24.048516 22.560547 23.853516L23.853516 22.560547C24.048516 22.364547 24.048516 22.048516 23.853516 21.853516L22.853516 20.853516 z" fill="#FFAE00"/>
+                </svg>
+            </div>
+        </td>
+        <td class="">
+            <div class="flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                    <path d="M10 2L9 3L3 3L3 5L21 5L21 3L15 3L14 2L10 2 z M 4.3652344 7L5.8925781 20.263672C6.0245781 21.253672 6.877 22 7.875 22L16.123047 22C17.121047 22 17.974422 21.254859 18.107422 20.255859L19.634766 7L4.3652344 7 z" fill="#FF0000"/>
                 </svg>
             </div>
         </td>
@@ -217,10 +230,16 @@ else
         <td class="">Automatic</td>
         <td class="">2016</td>
         <td class="">
-            <div class="flex mx-auto justify-center">
+            <div class="flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
-                    <path d="M12 16.026L7.675 18.637 8.823 13.717 5 10.405 10.029 9.978 12 5.327 13.971 9.978 19 10.405 15.177 13.717 16.325 18.637z" opacity=".3" fill="#FFA200" />
-                    <path d="M23.053,9.002l-7.947-0.674L12,1L8.894,8.328L0.947,9.002l6.035,5.228L5.169,22L12,17.877L18.831,22l-1.813-7.77L23.053,9.002z M12,15.541l-3.806,2.297l1.01-4.33L5.84,10.594l4.425-0.375L12,6.125l1.735,4.094l4.425,0.375l-3.364,2.915l1.01,4.33L12,15.541z" fill="#FEC50E" />
+                    <path d="M6 2C4.9 2 4 2.9 4 4L4 20C4 21.1 4.9 22 6 22L17.171875 22L13 17.828125L13 13L17.828125 13L20 15.171875L20 8L14 2L6 2 z M 15 15L15 17L20.146484 22.146484L22.146484 20.146484L17 15L15 15 z M 22.853516 20.853516L20.853516 22.853516L21.853516 23.853516C22.048516 24.048516 22.365547 24.048516 22.560547 23.853516L23.853516 22.560547C24.048516 22.364547 24.048516 22.048516 23.853516 21.853516L22.853516 20.853516 z" fill="#FFAE00"/>
+                </svg>
+            </div>
+        </td>
+        <td class="">
+            <div class="flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                    <path d="M10 2L9 3L3 3L3 5L21 5L21 3L15 3L14 2L10 2 z M 4.3652344 7L5.8925781 20.263672C6.0245781 21.253672 6.877 22 7.875 22L16.123047 22C17.121047 22 17.974422 21.254859 18.107422 20.255859L19.634766 7L4.3652344 7 z" fill="#FF0000"/>
                 </svg>
             </div>
         </td>
@@ -254,10 +273,16 @@ else
         <td class="">Automatic</td>
         <td class="">2023</td>
         <td class="">
-            <div class="flex mx-auto justify-center">
+            <div class="flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
-                    <path d="M12 16.026L7.675 18.637 8.823 13.717 5 10.405 10.029 9.978 12 5.327 13.971 9.978 19 10.405 15.177 13.717 16.325 18.637z" opacity=".3" fill="#FFA200" />
-                    <path d="M23.053,9.002l-7.947-0.674L12,1L8.894,8.328L0.947,9.002l6.035,5.228L5.169,22L12,17.877L18.831,22l-1.813-7.77L23.053,9.002z M12,15.541l-3.806,2.297l1.01-4.33L5.84,10.594l4.425-0.375L12,6.125l1.735,4.094l4.425,0.375l-3.364,2.915l1.01,4.33L12,15.541z" fill="#FEC50E" />
+                    <path d="M6 2C4.9 2 4 2.9 4 4L4 20C4 21.1 4.9 22 6 22L17.171875 22L13 17.828125L13 13L17.828125 13L20 15.171875L20 8L14 2L6 2 z M 15 15L15 17L20.146484 22.146484L22.146484 20.146484L17 15L15 15 z M 22.853516 20.853516L20.853516 22.853516L21.853516 23.853516C22.048516 24.048516 22.365547 24.048516 22.560547 23.853516L23.853516 22.560547C24.048516 22.364547 24.048516 22.048516 23.853516 21.853516L22.853516 20.853516 z" fill="#FFAE00"/>
+                </svg>
+            </div>
+        </td>
+        <td class="">
+            <div class="flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                    <path d="M10 2L9 3L3 3L3 5L21 5L21 3L15 3L14 2L10 2 z M 4.3652344 7L5.8925781 20.263672C6.0245781 21.253672 6.877 22 7.875 22L16.123047 22C17.121047 22 17.974422 21.254859 18.107422 20.255859L19.634766 7L4.3652344 7 z" fill="#FF0000"/>
                 </svg>
             </div>
         </td>
@@ -270,7 +295,7 @@ else
             <div class="w-full font-semibold">Sollicitudin nibh sit!</div>
             <br/>
             <div class="w-full flex items-center mx-3">
-                                
+
                 <div class="text-sm"> Honda </div>
                 <span class="">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="16" height="16">
@@ -291,11 +316,17 @@ else
         <td class="">120</td>
         <td class="">Manuel</td>
         <td class="">1997</td>
-        <td class="rounded-br-xl">
-            <div class="flex mx-auto justify-center">
+        <td class="">
+            <div class="flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
-                    <path d="M12 16.026L7.675 18.637 8.823 13.717 5 10.405 10.029 9.978 12 5.327 13.971 9.978 19 10.405 15.177 13.717 16.325 18.637z" opacity=".3" fill="#FFA200" />
-                    <path d="M23.053,9.002l-7.947-0.674L12,1L8.894,8.328L0.947,9.002l6.035,5.228L5.169,22L12,17.877L18.831,22l-1.813-7.77L23.053,9.002z M12,15.541l-3.806,2.297l1.01-4.33L5.84,10.594l4.425-0.375L12,6.125l1.735,4.094l4.425,0.375l-3.364,2.915l1.01,4.33L12,15.541z" fill="#FEC50E" />
+                    <path d="M6 2C4.9 2 4 2.9 4 4L4 20C4 21.1 4.9 22 6 22L17.171875 22L13 17.828125L13 13L17.828125 13L20 15.171875L20 8L14 2L6 2 z M 15 15L15 17L20.146484 22.146484L22.146484 20.146484L17 15L15 15 z M 22.853516 20.853516L20.853516 22.853516L21.853516 23.853516C22.048516 24.048516 22.365547 24.048516 22.560547 23.853516L23.853516 22.560547C24.048516 22.364547 24.048516 22.048516 23.853516 21.853516L22.853516 20.853516 z" fill="#FFAE00"/>
+                </svg>
+            </div>
+        </td>
+        <td class="">
+            <div class="flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                    <path d="M10 2L9 3L3 3L3 5L21 5L21 3L15 3L14 2L10 2 z M 4.3652344 7L5.8925781 20.263672C6.0245781 21.253672 6.877 22 7.875 22L16.123047 22C17.121047 22 17.974422 21.254859 18.107422 20.255859L19.634766 7L4.3652344 7 z" fill="#FF0000"/>
                 </svg>
             </div>
         </td>
@@ -314,7 +345,7 @@ else
 var array = @json;
 
 
-function rowClick(id, e) {
+function rowClick(carId, e) {
     if (e.target.parentNode.id === "delete") {
         e.target.parentNode.style.filter = "brightness(10%)";
         
@@ -333,7 +364,7 @@ function rowClick(id, e) {
             function (result) {
                 if (result.isConfirmed) {
                     e.target.parentNode.style.filter = "brightness(50%)";
-                    document.querySelector("a#CarDeleteHref_"+id).click();
+                    document.querySelector("a#CarDeleteHref_"+carId).click();
                 }
                 else {
                     e.target.parentNode.style.filter = "brightness(100%)";
@@ -344,12 +375,12 @@ function rowClick(id, e) {
         return;    
     }
     else if (e.target.parentNode.id === "edit") {
-        console.log("edit");
         
+        document.querySelector("a#CarEditHref_"+carId).click();
         return;
     }
     
-    document.querySelector("a#CarDetailsHref_"+id).click();
+    document.querySelector("a#CarDetailsHref_"+carId).click();
 }
 </script>
 

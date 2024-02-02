@@ -48,15 +48,15 @@ public class FavoritesService
         return carFeaturesEntityDtos;
     }
 
-    public async Task<string> PostFavorite(UserFavoritesEntityDto userFavoritesEntityDto)
+    public async Task<bool> PostFavorite(UserFavoritesEntityDto userFavoritesEntityDto)
     {
         var response = await _httpClient.PostAsJsonAsync("UserFavorites", userFavoritesEntityDto);
-        return response.StatusCode.ToString();
+        return response.IsSuccessStatusCode;
     }
     
-    public async Task DeleteGetCarId(string carId, string userId)
+    public async Task DeleteGetCarId(int carId, string userId)
     {
-        var encodeCarId = Uri.EscapeDataString(carId);
+        var encodeCarId = Uri.EscapeDataString(carId.ToString());
         var encodeUserId = Uri.EscapeDataString(userId);
 
         await _httpClient.DeleteAsync($"UserFavorites/DeleteFavorite?carId={encodeCarId}&userId={encodeUserId}");

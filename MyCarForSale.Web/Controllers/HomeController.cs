@@ -222,6 +222,12 @@ public class HomeController : Controller
         await _carFeaturesService.RemoveAsync(id);
         return RedirectToAction(nameof(Index));
     }
+    
+    public async Task<IActionResult> SearchAll(string data)
+    {
+        var result = await _carFeaturesService.SearchCarFeaturesDto(data);
+        return Json(result);
+    }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

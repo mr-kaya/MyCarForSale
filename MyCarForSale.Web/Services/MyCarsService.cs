@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Imagekit.Sdk;
+using Microsoft.IdentityModel.JsonWebTokens;
 using MyCarForSale.Core.DTOs;
 using MyCarForSale.Web.Controllers;
 
@@ -98,7 +99,47 @@ public class MyCarsService
 
         return null;
     }
-    
+
+    public async Task<bool> UpdateCarFeatures(
+        CarFeaturesWithImageAndClassificationDto carFeaturesWithImageAndClassification)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jsonToken = handler.ReadToken(UserController.TokenKey);
+        var token = jsonToken as JwtSecurityToken;
+        var tokenUserId = token?.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+
+        if (tokenUserId != null && carFeaturesWithImageAndClassification.PublishUserId == Int32.Parse(tokenUserId))
+        {
+            var urlString = "CarFeatures/UpdateSaleCar";
+            var response = await _httpClient.PutAsJsonAsync(urlString, carFeaturesWithImageAndClassification);
+
+            return response.IsSuccessStatusCode;
+        }
+
+        return false;
+    }
+
+    public async Task<List<CarImagesEntityDto>> GetCarImagesWithId(int carId, string userId)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jsonToken = handler.ReadToken(UserController.TokenKey);
+        var token = jsonToken as JwtSecurityToken;
+        var tokenUserId = token?.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+
+        if (tokenUserId != null)
+        {
+            if (userId == tokenUserId)  
+            {
+                var urlString = Uri.EscapeDataString(carId.ToString());
+                urlString = "CarImages/GetCarPicturesWithCarId/" + urlString;
+                var response = await _httpClient.GetFromJsonAsync<CustomResponseDto<List<CarImagesEntityDto>>>(urlString);
+
+                if (response is { StatusCode: < 300 }) return response.Data;
+            }
+        }
+
+        return null;
+    }
     
     public async Task<string> PostImageKitWebsite(string path, string fileName)
     {
@@ -127,11 +168,35 @@ public class MyCarsService
         return resp.url;
     }
 
-    public async Task PostImageWithDatabase(CarImagesEntityDto carImagesEntityDto)
+    public async Task<bool> PostImageWithDatabase(CarImagesEntityDto carImagesEntityDto)
     {
-        await _httpClient.PostAsJsonAsync("CarImages", carImagesEntityDto);
+        var response = await _httpClient.PostAsJsonAsync("CarImages", carImagesEntityDto);
+        return response.IsSuccessStatusCode;
     }
 
+    public async Task<MainClassificationEntityDto> GetClassificationWithCarId(int carId, int userId)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jsonToken = handler.ReadToken(UserController.TokenKey);
+        var token = jsonToken as JwtSecurityToken;
+        var tokenUserId = token?.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+
+        if (tokenUserId != null && tokenUserId == userId.ToString())
+        {
+            var stringCarId = Uri.EscapeDataString(carId.ToString());
+            var url = "MainClassification/" + stringCarId;
+
+            var response = await _httpClient.GetFromJsonAsync<CustomResponseDto<MainClassificationEntityDto>>(url);
+
+            if (response.StatusCode < 300)
+            {
+                return response.Data;
+            }
+        }
+
+        return null;
+    }
+    
     public async Task<List<CarFeaturesWithImageAndClassificationAndUserAccountDto>?> GetSingleUserCars()
     {
         _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer "+UserController.TokenKey);
@@ -193,5 +258,71 @@ public class MyCarsService
         }
         
         return false;
-    } 
+    }
+
+    public async Task<CarFeaturesWithImageAndClassificationAndUserAccountDto> GetSaleCarWithId(int id)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jsonToken = handler.ReadToken(UserController.TokenKey);
+        var token = jsonToken as JwtSecurityToken;
+        var tokenUserId = token?.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+
+        if (tokenUserId != null && id != 0)
+        {
+            var urlString = Uri.EscapeDataString(id.ToString());
+            var url = "CarFeatures/GetSaleById/" + urlString;
+            var response = await _httpClient.GetFromJsonAsync<CustomResponseDto<CarFeaturesWithImageAndClassificationAndUserAccountDto>>(url);
+
+            if (response != null && response.Data.UserAccountEntityId == tokenUserId)
+            {
+                return response.Data;
+            }
+        }
+
+        return null;
+    }
+
+    public async Task<CarFeaturesEntityDto> GetCarWithId(int id)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jsonToken = handler.ReadToken(UserController.TokenKey);
+        var token = jsonToken as JwtSecurityToken;
+        var tokenUserId = token?.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+
+        if (tokenUserId != null && id != 0)
+        {
+            var urlString = Uri.EscapeDataString(id.ToString());
+            var url = "CarFeatures/" + urlString;
+            var response = await _httpClient.GetFromJsonAsync<CustomResponseDto<CarFeaturesEntityDto>>(url);
+
+            if (response != null && response.Data.Id == id)
+            {
+                return response.Data;
+            }
+        }
+
+        return null;
+    }
+
+    public async Task<bool> DeleteImageWithId(int imageId, int userId)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jsonToken = handler.ReadToken(UserController.TokenKey);
+        var token = jsonToken as JwtSecurityToken;
+        var tokenUserId = token?.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+        
+        if (!string.IsNullOrEmpty(tokenUserId) && tokenUserId == userId.ToString())
+        {
+            string stringImageId = Uri.EscapeDataString(imageId.ToString());
+            string url = "CarImages/"+stringImageId;
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

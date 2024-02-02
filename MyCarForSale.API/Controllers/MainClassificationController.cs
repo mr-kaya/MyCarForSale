@@ -37,7 +37,7 @@ public class MainClassificationController : CustomBaseController
         var getClassificationDto = _mapper.Map<MainClassificationEntityDto>(getClassification);
         return CreateActionResult(CustomResponseDto<MainClassificationEntityDto>.Success(200, getClassificationDto));
     }
-
+    
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> Save(MainClassificationEntityDto mainClassificationEntityDto)

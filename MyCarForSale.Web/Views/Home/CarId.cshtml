@@ -38,20 +38,17 @@
         <div class="mb-5">
             @if (UserController.TokenKey != null)
             {
-                <form method="post">
-                    <input type="hidden" name="carId" value="@Model.Id"/>
-                    <button type="submit" asp-controller="Favorites" asp-action="AddFavorites" class="h-[4.5rem] grid grid-cols-3 gap-4 rounded-lg bg-blue-500 text-white font-semibold w-full">
-                        <div class="h-full flex justify-end items-center">
-                            <div class="bg-gray-100 rounded-full p-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
-                                    <path d="M12 16.026L7.675 18.637 8.823 13.717 5 10.405 10.029 9.978 12 5.327 13.971 9.978 19 10.405 15.177 13.717 16.325 18.637z" opacity=".8" fill="#FFA200"></path>
-                                    <path d="M23.053,9.002l-7.947-0.674L12,1L8.894,8.328L0.947,9.002l6.035,5.228L5.169,22L12,17.877L18.831,22l-1.813-7.77L23.053,9.002z M12,15.541l-3.806,2.297l1.01-4.33L5.84,10.594l4.425-0.375L12,6.125l1.735,4.094l4.425,0.375l-3.364,2.915l1.01,4.33L12,15.541z" fill="#FEC50E"></path>
-                                </svg>
-                            </div>
+                <button id="submitButtonId" onclick="submitButton()" class="h-[4.5rem] grid grid-cols-3 gap-4 rounded-lg bg-blue-500 text-white font-semibold w-full">
+                    <div class="h-full flex justify-end items-center">
+                        <div class="bg-gray-100 rounded-full p-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                                <path d="M12 16.026L7.675 18.637 8.823 13.717 5 10.405 10.029 9.978 12 5.327 13.971 9.978 19 10.405 15.177 13.717 16.325 18.637z" opacity=".8" fill="#FFA200"></path>
+                                <path d="M23.053,9.002l-7.947-0.674L12,1L8.894,8.328L0.947,9.002l6.035,5.228L5.169,22L12,17.877L18.831,22l-1.813-7.77L23.053,9.002z M12,15.541l-3.806,2.297l1.01-4.33L5.84,10.594l4.425-0.375L12,6.125l1.735,4.094l4.425,0.375l-3.364,2.915l1.01,4.33L12,15.541z" fill="#FEC50E"></path>
+                            </svg>
                         </div>
-                        <div class="h-full col-span-2 flex justify-start items-center tracking-wide">Add Favorites</div>
-                    </button>
-                </form>
+                    </div>
+                    <div class="h-full col-span-2 flex justify-start items-center tracking-wide">Add Favorites</div>
+                </button>
             }
             else
             {
@@ -183,6 +180,41 @@
             divDetails.style.display = "none";
             buttonDetails.style.backgroundColor = "#FFFFFF";           
         }
+    }
+    
+    function submitButton() {
+        var data = new FormData();
+        
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("AddFavorites","Favorites")',
+            data: {
+                carId: '@Model.Id'
+            },
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        title: "Successful",
+                        text: "Vehicle added to favorite.",
+                        icon: "success",
+                    });
+                    setTimeout(function () {
+                       Swal.closeModal();
+                    }, 1000);
+                }
+                else {
+                    Swal.fire({
+                        title: "Failed",
+                        text: "Vehicle could not be added to favorite.",
+                        icon: "error"
+                    });
+                    setTimeout(function () {
+                       Swal.closeModal();
+                    }, 2000);
+                }
+            }
+        });
     }
     
     function baseButtonClick() {

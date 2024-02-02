@@ -70,6 +70,11 @@ public class UserController : Controller
     public async Task<IActionResult> RegisterUser(UserAccountEntityDto userAccountEntityDto, string userRePassword)
     {
         TempData["Error400"] = null;
+        if (userAccountEntityDto.Country == null)
+        {
+            userAccountEntityDto.Country = "Türkiye";
+        }
+        
         ValidationResult result = await _validator.ValidateAsync(userAccountEntityDto);
         List<string> errors = new List<string>();
 

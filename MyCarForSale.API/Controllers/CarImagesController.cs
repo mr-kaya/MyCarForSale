@@ -34,6 +34,14 @@ public class CarImagesController : CustomBaseController
         return CreateActionResult(CustomResponseDto<CarImagesEntityDto>.Success(200, imageDto));
     }
 
+    [HttpGet("[action]/{id}")]
+    public async Task<IActionResult> GetCarPicturesWithCarId(int id)
+    {
+        var images = await _service.Where(entity => entity.BaseEntityId == id).ToListAsync();
+        var imagesDto = _mapper.Map<List<CarImagesEntityDto>>(images);
+        return CreateActionResult(CustomResponseDto<List<CarImagesEntityDto>>.Success(200, imagesDto));
+    }
+    
     [HttpPost]
     public async Task<IActionResult> Save(CarImagesEntityDto carImagesEntityDto)
     {

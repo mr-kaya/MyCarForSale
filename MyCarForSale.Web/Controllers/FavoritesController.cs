@@ -42,24 +42,24 @@ public class FavoritesController : Controller
             var claims = jsonToken.Claims;
             var idClaims = claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
             
-            if (idClaims != null) await _favoritesService.DeleteGetCarId(id.ToString(), idClaims);
+            if (idClaims != null) await _favoritesService.DeleteGetCarId(id, idClaims);
         }
         
         return RedirectToAction("MyFavoritesPage", "Favorites");
     }
 
-    public async Task<IActionResult> AddFavorites(string carId)
+    public async Task<IActionResult> AddFavorites(int carId)
     {
+        bool boolPostFavorite = false;
         var handler = new JwtSecurityTokenHandler();
         var jsonToken = handler.ReadToken(UserController.TokenKey) as JwtSecurityToken;
         
         if (jsonToken != null)
         {
-            int carIdInt32 = Int32.Parse(carId);
             
             var claims = jsonToken.Claims;
             var idClaims = claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
-
+            
             if (idClaims != null)
             {
                 var myFavoritesNumbers = await _favoritesService.GetUserAllFavoriteNumbersAsync(idClaims);
@@ -67,29 +67,22 @@ public class FavoritesController : Controller
                 {
                     foreach (var item in myFavoritesNumbers)
                     {
-                        if (item.FavoriteBaseId.ToString() == carId)
+                        if (item.FavoriteBaseId == carId)
                         {
                             await _favoritesService.DeleteGetCarId(carId, idClaims);
                         }
                     }
-                    
-                    /*
-                    foreach (var item in myFavoritesNumbers.Select(dto => dto.FavoriteBaseId.ToString()).Where(s => s == carId))
-                    {
-                        await _favoritesService.DeleteGetCarId(carId, item);
-                    } 
-                    */  
                 }
-
+                
                 UserFavoritesEntityDto userFavoritesEntityDto = new()
                 {
                     FavoriteUserId = int.Parse(idClaims),
-                    FavoriteBaseId = carIdInt32
+                    FavoriteBaseId = carId
                 };
-                await _favoritesService.PostFavorite(userFavoritesEntityDto);    
+                boolPostFavorite = await _favoritesService.PostFavorite(userFavoritesEntityDto);    
             }
         }
 
-        return Redirect($"/Home/CarId/{carId}");
+        return Json(new { success = boolPostFavorite });
     }
 }

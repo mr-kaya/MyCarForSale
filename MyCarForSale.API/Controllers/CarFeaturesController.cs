@@ -175,6 +175,17 @@ public class CarFeaturesController : CustomBaseController
         var car = await _service.GetByIdAsyncTask(id);
         await _service.DeleteAsyncTask(car);
         return CreateActionResult(CustomNoContentResponseDto.Success(204));
+    }
 
+    [HttpGet("[action]")]
+    public async Task<IActionResult> Search(string data)
+    {
+        var getAllData = _carFeaturesService.Where(entity => entity.UserAccountEntity != null && entity.UserAccountEntity.Name.Contains(data))
+            .ToList();
+
+        getAllData.AddRange(_carFeaturesService.Where(entity => entity.AdvertisementName.Contains(data)).ToList());
+        
+        var getAllDataDto = _mapper.Map<List<CarFeaturesEntityDto>>(getAllData);
+        return CreateActionResult(CustomResponseDto<List<CarFeaturesEntityDto>>.Success(200,getAllDataDto));
     }
 }
