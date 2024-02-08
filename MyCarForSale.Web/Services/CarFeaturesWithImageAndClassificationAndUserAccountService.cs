@@ -105,4 +105,11 @@ public class CarFeaturesWithImageAndClassificationAndUserAccountService
 
         return null;
     }
+
+    public async Task<CarFeaturesWithImageAndClassificationAndUserAccountDto> SearchCarImageDto(CarFeaturesEntityDto carFeaturesEntityDto)
+    {
+        var response = await _httpClient.GetFromJsonAsync<CustomResponseDto<CarFeaturesWithImageAndClassificationAndUserAccountDto>>($"CarFeatures/GetSaleById/{carFeaturesEntityDto.Id}");
+
+        return response?.Data;
+    }
 }

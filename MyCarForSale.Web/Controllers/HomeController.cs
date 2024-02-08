@@ -225,8 +225,17 @@ public class HomeController : Controller
     
     public async Task<IActionResult> SearchAll(string data)
     {
-        var result = await _carFeaturesService.SearchCarFeaturesDto(data);
-        return Json(result);
+        List<CarFeaturesWithImageAndClassificationAndUserAccountDto> carFeaturesWithImagesAndUserAccountDtos = new List<CarFeaturesWithImageAndClassificationAndUserAccountDto>();
+        var resultList = await _carFeaturesService.SearchCarFeaturesDto(data);
+        if (resultList != null)
+        {
+            foreach (var result in resultList)
+            {
+                var resultImage = await _carFeaturesService.SearchCarImageDto(result);
+                carFeaturesWithImagesAndUserAccountDtos.Add(resultImage);
+            }
+        }
+        return Json(carFeaturesWithImagesAndUserAccountDtos);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
